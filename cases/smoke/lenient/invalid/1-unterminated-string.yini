@@ -1,0 +1,7 @@
+@yini
+
+^ Config
+// INVALID: Below line has missing closing double quote '"'.
+name = "Broken Demo App
+version = "1.0.0"
+enabled = true

@@ -1,0 +1,11 @@
+@yini
+
+^ App
+title = 'DemoApp'
+version = '2.5.0'
+enabled = true
+description = 'This is a demo app.'
+ratio = 1.2
+debug = off
+notes =
+pageNum = 25

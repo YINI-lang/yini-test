@@ -1,0 +1,37 @@
+@Yini
+
+^ Package
+name =           'pear-test'
+version =        '0.1.0'
+description =    'Shared test harness for Pear parser implementations'
+license =        'Apache-2.0'
+readme =         'README.md'
+requiresPython = '>=3.10'
+keywords =       ['pear', 'reader', 'testing', 'uniform', 'cli']
+authors =        ['Your Name']
+maintainers =    ['Pear Tools Team']
+
+# Classifiers describe package maturity, target audience, and intended use.
+classifiers = [
+    'Development Status :: 3 - Alpha',
+    'Programming Language :: Something :: 3',
+    'Intended Audience :: Developers',
+    'Topic :: Software Development :: Testing',
+    'Topic :: Software Development :: Quality Assurance'
+]
+
+dependencies = [
+    'pear-runner-runtime==4.13.2',
+    'typing-extensions>=4.10'
+]
+
+# Development dependencies are used for testing, linting, type checking, and publishing.
+devDependencies = [
+    'pytest',
+    'ruff',
+    'mypy',
+    'build',
+    'twine'
+]
+
+/End

@@ -1,0 +1,17 @@
+^ Config
+str_title = "Program Title"
+
+^^ Server
+str_name = "localhost"
+int_port = 8080
+
+^^ Features
+is_search = yes
+is_logging = no
+
+^^^ Testing
+is_enabled = on
+
+^ Paths
+str_home = "./"
+str_temp = "/tmp"

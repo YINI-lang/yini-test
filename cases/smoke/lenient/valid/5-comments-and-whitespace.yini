@@ -1,0 +1,24 @@
+/* Global application settings */
+
+
+@yini
+
+^ App          // Main application section
+name =      "DemoApp"   # Application name
+name2     = "demoapp"
+version =   1.0
+isDebug=OFF
+
+    
+    /*
+        Server settings
+    */
+    ^^ Server
+
+    host = "127.0.0.1"
+
+    # Port number
+    port = 8080
+
+        // Optional flag
+        useTLS = false

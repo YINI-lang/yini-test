@@ -1,0 +1,9 @@
+// INVALID: Below has invalid directive spelling.
+@yinii strict
+
+^ Package
+name = "invalid-directive-example"
+version = "0.1.0"
+description = "Strict document with invalid YINI directive"
+
+/END

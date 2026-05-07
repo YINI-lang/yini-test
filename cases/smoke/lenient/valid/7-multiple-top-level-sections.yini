@@ -1,0 +1,47 @@
+@yini
+
+/* 
+ * Practical web application configuration.
+ */
+
+^ WebApp
+name = "lumen-portal"
+version = "1.6.0"
+environment = "staging"
+
+^ Runtime
+debug = false
+logLevel = "info"
+timezone = "Europe/Stockholm"
+logPaths = [
+    R"C:\Users\user\",  // Explicit Raw-string.
+     "D:\temp\"         // Implicit Raw-string.
+
+]
+
+^ Net
+host = "0.0.0.0"
+port = 5173
+publicUrl = "https://portal.example.com"
+
+    ^^ Security
+    csrfProtection = on
+    allowedHosts = [
+        "portal.example.com",
+        "localhost"
+    ]
+
+    email = {
+        provider: "smtp",
+        fromAddress: "noreply@example.com",
+        retryCount: 3
+    }
+
+^ Database
+type = "postgres"
+host = "db.internal"
+database = "lumen_portal"
+pool = { min: 2, max: 20 }
+
+^ FeatureFlags
+enabled = ["new-navigation", "audit-log", "bulk-export"]

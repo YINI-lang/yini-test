@@ -1,0 +1,10 @@
+@yini
+
+^ Package
+name = "missing-end-example"
+version = "0.1.0"
+description = "Strict document without required terminator"
+private = false
+license = "Apache-2.0"
+
+// INVALID: Missing the required document terminator "/END" in strict mode.

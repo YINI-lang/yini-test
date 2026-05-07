@@ -1,0 +1,35 @@
+@yini
+
+^ Project
+name = "pear-reader"
+version = "1.0.0"
+description = "Reader service for processing Pear configuration documents"
+environment = "staging"
+
+enabled = true
+publish = off
+private = false
+
+// Version-like and identifier values are kept as strings to preserve
+// exact formatting.
+schemaVersion = "2026.1"
+releaseChannel = "stable"
+
+priority = 5
+timeoutSec = 30
+ratio = 1.25
+offsetMinutes = -60
+sampleRate = 1e-3
+deprecatedAt = null
+
+homepage = "https://homepage.example"
+readme = "README.md"
+license = "Apache-2.0"
+
+// Entrypoint is a logical command name.
+entrypoint = "pear-reader"
+defaultEncoding = "utf-8"
+featureMask = 0b1010
+themeColor = 0x33AACC
+
+/end

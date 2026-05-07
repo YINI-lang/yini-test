@@ -1,0 +1,65 @@
+# Taskfile.yml for yini-test-python.
+
+# Setup new file on Windows:
+# winget install Task.Task
+# task --init
+
+version: '3'
+
+vars:
+
+tasks:
+  default:
+    cmds:
+      - task --list
+
+  start:
+    desc: Run the yini_test CLI
+      - python -m yini_test --help
+
+  install:
+    desc: Install Python packages
+    cmds:
+      - python -m pip install -r requirements.txt
+
+  install-dev:
+    desc: Install Python packages
+    cmds:
+      - python -m pip install -r requirements-dev.txt
+
+  check:
+    desc: Run all project checks.
+    deps: [lint, typecheck, test]
+
+  test:
+    desc: Run tests
+    cmds:
+      - python -m pytest -v
+
+  lint:
+    desc: Run Ruff linter
+    cmds:
+      - python -m ruff check src
+
+  typecheck:
+    desc: Run mypy type checking
+    platforms: [windows]
+    cmds:
+      - cmd /c "set MYPYPATH=src&& python -m mypy -p yini_test --explicit-package-bases --ignore-missing-imports"
+
+  # Deletes Python caches under src:
+  #   - __pycache__ directories
+  #   - .pyc files
+  #   - .pyo files, if any
+  clean-cache:
+    desc: Delete Python cache files and __pycache__ directories under src (Windows only)
+    platforms: [windows]
+    cmds:
+      - powershell -NoProfile -Command "Get-ChildItem 'src' -Recurse -Directory -Filter '__pycache__' | Remove-Item -Recurse -Force"
+      - powershell -NoProfile -Command "Get-ChildItem 'src' -Recurse -File -Include *.pyc,*.pyo | Remove-Item -Force"
+      - powershell -NoProfile -Command "if (Test-Path '.mypy_cache') { Remove-Item -Recurse -Force '.mypy_cache' }"
+  
+  clean:
+    desc: Run all cleanup tasks
+    deps:
+      - clean-cache

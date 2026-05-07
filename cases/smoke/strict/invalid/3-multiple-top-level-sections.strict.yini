@@ -1,0 +1,12 @@
+@yini
+
+^ Package
+name = "multi-root-example"
+version = "0.1.0"
+
+// INVALID: Strict mode allows only one explicit top-level section.
+^ BuildSystem
+backend = "setuptools.build_meta"
+requires = ["setuptools>=69", "wheel"]
+
+/END

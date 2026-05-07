@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yini-test"
+version = "0.1.0"
+description = "Shared test harness and case corpus for YINI parser implementations."
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["yini", "testing", "parser", "conformance", "cli"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Intended Audience :: Developers",
+]
+
+[project.scripts]
+yini-test = "yini_test.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

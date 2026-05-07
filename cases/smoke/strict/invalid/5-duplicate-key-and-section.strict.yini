@@ -1,0 +1,21 @@
+@yini
+
+/*
+ * @note This file has intentionally TWO strict-mode violations.
+ */
+
+^ Package
+name = "duplicate-example"
+version = "0.1.0"
+
+// INVALID: Duplicate key in the same section.
+version = "0.2.0"
+
+^^ Scripts
+test = "python -m pytest"
+
+// INVALID: Duplicate section name under the same parent.
+^^ Scripts
+lint = "python -m ruff check src tests"
+
+/END

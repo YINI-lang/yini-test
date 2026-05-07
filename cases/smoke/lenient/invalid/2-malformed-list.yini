@@ -1,0 +1,8 @@
+^ Config
+// INVALID: Below list has missing closing bracket "]".
+features = [
+    "search",
+    "logs",
+    "metrics"
+
+enabled = true

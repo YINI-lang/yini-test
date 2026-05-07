@@ -1,0 +1,10 @@
+@yini
+
+// INVALID: Strict mode does not allow members outside an explicit section.
+name = "orphan-member-example"
+
+^ Package
+version = "0.1.0"
+description = "Strict document with an orphan top-level member"
+
+/END

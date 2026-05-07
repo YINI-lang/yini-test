@@ -1,0 +1,10 @@
+@yini
+
+^ Config
+// INVALID: Below inline object has missing closing curly bracket "}".
+cache = {
+    enabled: true,
+    maxMb: 256,
+    timeoutSec: 30
+
+debug = false
