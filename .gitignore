@@ -1,6 +1,12 @@
 # Ignore ENV file.
 .env
 
+# Python packaging/build metadata
+*.egg-info/
+.eggs/
+build/
+dist/
+
 # Python bytecode / caches.
 __pycache__/
 *$py.class
@@ -13,13 +19,6 @@ __pycache__/
 
 # Ignore Python linting cache.
 .ruff_cache/
-
-# Ignore compiled output (containing all emitted code and types).
-dist/
-
-# DO NOT ignore js files in examples.
-!examples/basic-output.js
-!examples/nested-output.js
 
 # Ignore logs...
 logs

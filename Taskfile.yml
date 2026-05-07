@@ -13,14 +13,38 @@ tasks:
     cmds:
       - task --list
 
-  start:
-    desc: Run the yini_test CLI
-      - python -m yini_test --help
+  # start:
+  #   desc: Run the yini_test CLI
+  #   cmds:
+  #     - python -m yini_test
 
-  install:
-    desc: Install Python packages
+  # help:
+  #   desc: Show help message and exit
+  #   cmds:
+  #     - python -m yini_test --help
+  desc: Show help message
+  cmds:
+    - python -m yini_test --help  
+
+  run-smoke:
+    desc: Run smoke cases using the TypeScript parser adapter
     cmds:
-      - python -m pip install -r requirements.txt
+      - python -m yini_test smoke --cases-root cases --adapter "npx tsx ../yini-parser-typescript/tools/yini-test-adapter.ts --input {input} --mode {mode}"
+
+  run-all:
+    desc: Run all cases using the TypeScript parser adapter
+    cmds:
+      - python -m yini_test all --cases-root cases --adapter "npx tsx ../yini-parser-typescript/tools/yini-test-adapter.ts --input {input} --mode {mode}"
+
+  # install:
+  #   desc: Install Python packages
+  #   cmds:
+  #     - python -m pip install -r requirements.txt
+  install:
+    desc: Install development dependencies
+    cmds:
+      - python -m pip install -r requirements-dev.txt
+      - python -m pip install -e .
 
   install-dev:
     desc: Install Python packages
