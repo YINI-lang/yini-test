@@ -1,69 +1,46 @@
-# Taskfile.yml for yini-test-python.
+# Taskfile.yml for yini-test.
 
-# Setup new file on Windows:
+# Setup on Windows:
 # winget install Task.Task
 # task --init
 
 version: '3'
 
-vars:
-
 tasks:
   default:
+    desc: Show available tasks
     cmds:
       - task --list
 
-  # start:
-  #   desc: Run the yini_test CLI
-  #   cmds:
-  #     - python -m yini_test
-
-  # help:
-  #   desc: Show help message and exit
-  #   cmds:
-  #     - python -m yini_test --help
-  desc: Show help message
-  cmds:
-    - python -m yini_test --help  
-
-  run-smoke:
-    desc: Run smoke cases using the TypeScript parser adapter
+  help:
+    desc: Show yini-test CLI help
     cmds:
-      - python -m yini_test smoke --cases-root cases --adapter "npx tsx ../yini-parser-typescript/tools/yini-test-adapter.ts --input {input} --mode {mode}"
+      - python -m yini_test --help
 
-  run-all:
-    desc: Run all cases using the TypeScript parser adapter
-    cmds:
-      - python -m yini_test all --cases-root cases --adapter "npx tsx ../yini-parser-typescript/tools/yini-test-adapter.ts --input {input} --mode {mode}"
-
-  # install:
-  #   desc: Install Python packages
-  #   cmds:
-  #     - python -m pip install -r requirements.txt
   install:
-    desc: Install development dependencies
+    desc: Install development dependencies and install yini-test in editable mode
     cmds:
       - python -m pip install -r requirements-dev.txt
       - python -m pip install -e .
 
   install-dev:
-    desc: Install Python packages
+    desc: Install development dependencies only
     cmds:
       - python -m pip install -r requirements-dev.txt
 
-  check:
-    desc: Run all project checks.
-    deps: [lint, typecheck, test]
+  # ---------------------------------------------------------------------------
+  # Tests for yini-test itself.
+  # ---------------------------------------------------------------------------
 
   test:
-    desc: Run tests
+    desc: Run unit/integration tests for yini-test itself
     cmds:
       - python -m pytest -v
 
   lint:
     desc: Run Ruff linter
     cmds:
-      - python -m ruff check src
+      - python -m ruff check src tests
 
   typecheck:
     desc: Run mypy type checking
@@ -71,18 +48,85 @@ tasks:
     cmds:
       - cmd /c "set MYPYPATH=src&& python -m mypy -p yini_test --explicit-package-bases --ignore-missing-imports"
 
-  # Deletes Python caches under src:
-  #   - __pycache__ directories
-  #   - .pyc files
-  #   - .pyo files, if any
+  check:
+    desc: Run all project checks for yini-test itself
+    deps:
+      - lint
+      - typecheck
+      - test
+
+  # ---------------------------------------------------------------------------
+  # Run yini-test cases against yini-parser-typescript.
+  # ---------------------------------------------------------------------------
+
+  run-smoke-typescript:
+    desc: Run smoke cases against yini-parser-typescript
+    cmds:
+      - python -m yini_test smoke --cases-root cases --adapter npx tsx ../yini-parser-typescript/tools/yini-test-adapter.ts --input {input} --mode {mode}
+
+  run-all-typescript:
+    desc: Run all available cases against yini-parser-typescript
+    cmds:
+      - python -m yini_test all --cases-root cases --adapter npx tsx ../yini-parser-typescript/tools/yini-test-adapter.ts --input {input} --mode {mode}
+
+  # ---------------------------------------------------------------------------
+  # Run yini-test cases against yini-parser-python.
+  # ---------------------------------------------------------------------------
+
+  run-smoke-python:
+    desc: Run smoke cases against yini-parser-python
+    env:
+      PYTHONPATH: src
+    cmds:
+      - python -m yini_test smoke --cases-root cases --adapter python ../yini-parser-python/tools/yini_parser_adapter.py --input {input} --mode {mode}
+
+  run-all-python:
+    desc: Run all available cases against yini-parser-python
+    env:
+      PYTHONPATH: src
+    cmds:
+      - python -m yini_test all --cases-root cases --adapter python ../yini-parser-python/tools/yini_parser_adapter.py --input {input} --mode {mode}
+
+  # ---------------------------------------------------------------------------
+  # Convenience aliases.
+  # ---------------------------------------------------------------------------
+
+  smoke:
+    desc: Run smoke cases against the default parser adapter
+    cmds:
+      - task run-smoke-typescript
+
+  all:
+    desc: Run all cases against the default parser adapter
+    cmds:
+      - task run-all-typescript
+
+  adapters-smoke:
+    desc: Run smoke cases against all configured parser adapters
+    deps:
+      - run-smoke-typescript
+      - run-smoke-python
+
+  adapters-all:
+    desc: Run all available cases against all configured parser adapters
+    deps:
+      - run-all-typescript
+      - run-all-python
+
+  # ---------------------------------------------------------------------------
+  # Cleanup.
+  # ---------------------------------------------------------------------------
+
   clean-cache:
-    desc: Delete Python cache files and __pycache__ directories under src (Windows only)
+    desc: Delete Python cache files and __pycache__ directories under src and tests
     platforms: [windows]
     cmds:
-      - powershell -NoProfile -Command "Get-ChildItem 'src' -Recurse -Directory -Filter '__pycache__' | Remove-Item -Recurse -Force"
-      - powershell -NoProfile -Command "Get-ChildItem 'src' -Recurse -File -Include *.pyc,*.pyo | Remove-Item -Force"
+      - powershell -NoProfile -Command "Get-ChildItem 'src','tests' -Recurse -Directory -Filter '__pycache__' -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force"
+      - powershell -NoProfile -Command "Get-ChildItem 'src','tests' -Recurse -File -Include *.pyc,*.pyo -ErrorAction SilentlyContinue | Remove-Item -Force"
+      - powershell -NoProfile -Command "if (Test-Path '.pytest_cache') { Remove-Item -Recurse -Force '.pytest_cache' }"
       - powershell -NoProfile -Command "if (Test-Path '.mypy_cache') { Remove-Item -Recurse -Force '.mypy_cache' }"
-  
+      - powershell -NoProfile -Command "if (Test-Path '.ruff_cache') { Remove-Item -Recurse -Force '.ruff_cache' }"
+
   clean:
     desc: Run all cleanup tasks
     deps:

@@ -6,6 +6,8 @@ It does not contain a YINI parser itself. Instead, it invokes a chosen parser im
 
 The goal of `yini-test` is to stay implementation-agnostic, so that multiple YINI parsers can be tested in a uniform way.
 
+---
+
 ## What `yini-test` does
 
 - Runs a chosen parser implementation through an adapter.
@@ -23,13 +25,148 @@ The goal of `yini-test` is to stay implementation-agnostic, so that multiple YIN
 
 ---
 
+## Quick Start
+
+### First-time setup
+
+It is assumed you are in the `yini-test/` directory, and that you have the directory `yini-parser-python/` already alongside the directory `yini-test`.
+
+Run:
+```bash
+task clean
+task install
+task test
+task run-smoke-python
+```
+
+If you want to test the TypeScript parser instead, replace the last command with:
+```bash
+task run-smoke-typescript
+```
+
+### Later runs
+
+Run these commands from the `yini-test/` directory.
+
+Run:
+```bash
+task run-smoke-python
+```
+
+or:
+
+```bash
+task run-smoke-typescript
+```
+
+depending on which parser implementation you want to test.
+
+---
+
+## Expected local repository layout
+
+The predefined Taskfile commands assume that the parser repositories are located next to `yini-test`:
+
+```text
+/
+├─ yini-test/
+├─ yini-parser-typescript/
+└─ yini-parser-python/
+```
+
+Adapter paths are **relative to** this directory: `yini-test/`:
+- The TypeScript parser adapter is expected at:  
+  `../yini-parser-typescript/tools/yini-test-adapter.ts`
+- The Python parser adapter is expected at:  
+  `../yini-parser-python/tools/yini_parser_adapter.py`
+
+## Installing and running tests
+
+### 1. Clean local cache files
+
+```bash
+task clean
+```
+
+This removes Python cache files and temporary tool caches.
+
+### 2. Install dependencies
+
+```bash
+task install
+```
+
+This installs the development dependencies and installs `yini-test` itself **in editable mode**.
+
+### 3. Show available tasks
+
+```bash
+task
+```
+
+### 4. Test `yini-test` itself
+
+```bash
+task test
+```
+
+This runs the unit and integration tests for the `yini-test` runner.
+
+A successful result should look similar to:
+```txt
+15 passed
+```
+
+### 5. Run smoke tests against `yini-parser-python`
+
+```bash
+task run-smoke-python
+```
+
+This runs the smoke test cases against the Python parser adapter.
+
+The task uses a command similar to:
+```bash
+python -m yini_test smoke \
+  --cases-root cases \
+  --adapter python ../yini-parser-python/tools/yini_parser_adapter.py --input {input} --mode {mode}
+```
+
+The `{input}` and `{mode}` placeholders are replaced automatically for each test case.
+
+### 6. Understanding the result
+
+Each case is reported as `PASS` or `FAIL`.
+
+Example:
+```txt
+PASS  "cases\smoke\lenient\valid\1-minimal.yini"
+FAIL  "cases\smoke\lenient\valid\3-nested-sections.yini"
+```
+
+For valid cases, `yini-test` compares the parser output with the matching expected JSON file.
+
+For example:
+```txt
+cases/smoke/lenient/valid/3-nested-sections.yini
+```
+
+is compared with:
+```txt
+cases/smoke/lenient/valid/3-nested-sections.json
+```
+
+If a test case fails, `yini-test` prints the difference showing the expected output and the actual parser output.
+
+---
+
 ## Project structure
 
-- `__main__.py` is the package entry point.
-- `cli.py` handles command-line argument parsing.
-- `runner.py` contains the core test-running logic.
-- `cases/` contains the shared case corpus.
-- `tests/` contains tests for the `yini-test` project itself.
+- `src/yini_test/__main__.py` is the package entry point.
+- `src/yini_test/cli.py` handles the command-line argument parsing.
+- `src/yini_test/runner.py` contains the core test-running logic.
+- `cases/` contains the shared (parser test) case corpus.
+- `tests/` contains tests for this `yini-test` project itself.
 
 Current case groups include:
 - `golden/` for cases where valid input must produce exact expected output.
@@ -41,41 +178,20 @@ Current case groups include:
 
 This project itself does not include adapters for specific parser implementations.
 
-Instead, each parser project/repository should keep and maintain its own adapter, including:
-- Its own adapter script (for `yini-test`).
-- Any parser-specific setup.
-- Any parser-specific path or import handling.
-
-So, in practice, for example:
-- `yini-parser-typescript` contains its own TypeScript adapter.
-- `yini-parser-python` contains its own Python adapter.
-- And so on.
-
-This means each project/repository owns its own adapter and is responsible for making it follow the rules defined in [docs/adapter-contract.md](./docs/adapter-contract.md).
-
-Suggested locations for the adapter:
-- `tools/yini-test-adapter.ts`
-- `tools/yini_test_adapter.py`
-- `scripts/yini_test_adapter.py`
-
----
-
-## Running `yini-test`
-
-`yini-test` accepts an adapter command, for example:
-
-Example with the TypeScript parser adapter:
-```bash
-yini-test smoke --adapter node ../yini-parser-typescript/dist/tools/yini-test-adapter.js --input {input} --mode {mode}
-```
-
-Example with the Python parser adapter:
-```bash
-yini-test smoke --adapter python ../yini-parser-python/tools/yini_test_adapter.py --input {input} --mode {mode}
-```
+Instead, each parser project/repository should provide and maintain its own adapter logic for `yini-test` to call.
 
 ---
 
 ## Related documents
 - [docs/adapter-contract.md](./docs/adapter-contract.md)
 - [docs/case-contract.md](./docs/case-contract.md)
+- [docs/runner-flow.md](./docs/runner-flow.md)
+
+---
+
+**^YINI ≡**  
+> YINI is a human-readable, INI-inspired, indentation-insensitive configuration format with clear nested sections, explicit structure, and predictable parsing.
+> 
+> It has a formal specification and a defined grammar.
+
+[yini-lang.org](https://yini-lang.org/?utm_source=github&utm_medium=referral&utm_campaign=yini_test&utm_content=readme_footer) · [YINI-lang on GitHub](https://github.com/YINI-lang)  

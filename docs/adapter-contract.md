@@ -4,6 +4,32 @@ An adapter is a small command-line program used by `yini-test` to run a specific
 
 Its purpose is to let `yini-test` test different parser implementations in a uniform way.
 
+---
+
+## Adapters
+
+This repository itself does not include the adapters for all the specific parser implementations.
+
+Instead, each parser project/repository should keep and maintain its own adapter, including:
+- Its own adapter script (for `yini-test`).
+- Any parser-specific setup.
+- Any parser-specific path or import handling.
+
+So, in practice, for example:
+- `yini-parser-typescript` contains its own TypeScript adapter.
+- `yini-parser-python` contains its own Python adapter.
+- And so on.
+
+This means each project/repository owns its own adapter and is responsible for making it follow the rules defined in [docs/adapter-contract.md](./docs/adapter-contract.md).
+
+Suggested locations for the adapter:
+- `tools/yini-test-adapter.ts`
+- `tools/yini_test_adapter.py`
+- `scripts/yini_test_adapter.py`
+
+---
+
+
 ## Required behavior
 
 The adapter must:

@@ -1,0 +1,6 @@
+@yini lenient
+
+^ App
+name = "Demo App"
+
+/END

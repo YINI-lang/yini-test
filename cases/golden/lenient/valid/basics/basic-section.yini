@@ -1,0 +1,6 @@
+@yini
+
+^ App
+name = "Demo App"
+version = 1
+enabled = true
