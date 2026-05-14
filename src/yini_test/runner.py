@@ -4,6 +4,7 @@ Core execution logic for yini_test.
 This file contains the main test-running behavior.
 """
 
+# src/yini_test/runner.py
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -11,7 +12,10 @@ from pathlib import Path
 import difflib
 import json
 import subprocess
+import time
 from typing import Any
+
+from yini_test.utils.executables import resolve_executable
 
 
 @dataclass(frozen=True, slots=True)
@@ -54,6 +58,7 @@ def run_suite(
     - 1 if any case failed
     """
 
+    started_at = time.perf_counter()
     suite_names = _resolve_suite_names(suite)
     total_passed = 0
     total_failed = 0
@@ -96,8 +101,13 @@ def run_suite(
             break
 
     total = total_passed + total_failed
+    duration = time.perf_counter() - started_at
+
     print()
-    print(f"Summary: {total_passed} passed, {total_failed} failed, {total} total")
+    print(
+        f"Summary: {total_passed} passed, {total_failed} failed, "
+        f"{total} total, duration {_format_duration(duration)}"
+    )
 
     return 0 if total_failed == 0 else 1
 
@@ -235,13 +245,14 @@ def run_valid_case(
     Run a valid case.
 
     Expected behavior:
-    - adapter succeeds
-    - adapter outputs valid JSON
-    - actual JSON matches expected JSON
+    - Adapter succeeds.
+    - Adapter outputs valid JSON.
+    - Actual JSON matches expected JSON.
     """
 
     expected = load_expected_json(case.json_path)
 
+    print(f"RUN   \"{case.yini_path}\"")
     try:
         actual = run_adapter(adapter_tokens, input_path=case.yini_path, mode=mode)
     except RuntimeError as exc:
@@ -284,12 +295,29 @@ def run_invalid_case(
         mode=mode,
     )
 
-    completed = subprocess.run(
-        command,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-    )
+    command[0] = resolve_executable(command[0])
+
+    print(f"RUN   \"{case.yini_path}\"")
+    try:
+        # Run command line
+        completed = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            timeout=10,
+        )
+    except subprocess.TimeoutExpired:
+        return CaseResult(
+            case_path=case.yini_path,
+            passed=False,
+            message=(
+                f"Adapter timed out for invalid case: {case.yini_path.name}\n"
+                f"Command: {' '.join(command)}\n"
+                "Hint: The adapter may be waiting for interactive input, "
+                "or the parser process may not be exiting."
+            ),
+        )
 
     if completed.returncode != 0:
         return CaseResult(case_path=case.yini_path, passed=True)
@@ -341,7 +369,7 @@ def load_expected_json(path: Path) -> Any:
             f"  json_path: \"{path}\"\n"
             f"  error: {exc}"
         ) from exc
-    
+
 
 def run_adapter(
     adapter_tokens: list[str],
@@ -363,12 +391,24 @@ def run_adapter(
         mode=mode,
     )
 
-    completed = subprocess.run(
-        command,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-    )
+    command[0] = resolve_executable(command[0])
+
+    try:
+        # Run command line
+        completed = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            timeout=10,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError(
+            f"Adapter timed out for valid case: {input_path.name}\n"
+            f"Command: {' '.join(command)}\n"
+            "Hint: The adapter may be waiting for interactive input, "
+            "or the parser process may not be exiting."
+        ) from exc
 
     if completed.returncode != 0:
         stderr = completed.stderr.strip()
@@ -602,6 +642,23 @@ def _format_diff_range(raw_range: str) -> str:
     end = start + count - 1
 
     return f"lines {start}-{end}"
+
+
+def _format_duration(seconds: float) -> str:
+    """
+    Format a duration in a compact human-readable form.
+    """
+
+    if seconds < 1:
+        return f"{seconds * 1000:.0f} ms"
+
+    if seconds < 60:
+        return f"{seconds:.2f} s"
+
+    minutes = int(seconds // 60)
+    remaining_seconds = seconds % 60
+
+    return f"{minutes} min {remaining_seconds:.2f} s"
 
 
 def _resolve_suite_names(suite: str) -> list[str]:

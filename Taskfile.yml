@@ -37,6 +37,11 @@ tasks:
     cmds:
       - python -m pytest -v
 
+  test-debug:
+    desc: Run unit/integration tests for yini-test itself
+    cmds:
+      - python -m pytest -v -s
+
   lint:
     desc: Run Ruff linter
     cmds:
@@ -62,12 +67,14 @@ tasks:
   run-smoke-typescript:
     desc: Run smoke cases against yini-parser-typescript
     cmds:
-      - python -m yini_test smoke --cases-root cases --adapter npx tsx ../yini-parser-typescript/tools/yini-test-adapter.ts --input {input} --mode {mode}
+      # npx --yes means automatically answer "yes" if confirmations are needed.
+      - python -m yini_test smoke --cases-root cases --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
 
   run-all-typescript:
     desc: Run all available cases against yini-parser-typescript
     cmds:
-      - python -m yini_test all --cases-root cases --adapter npx tsx ../yini-parser-typescript/tools/yini-test-adapter.ts --input {input} --mode {mode}
+      # npx --yes means automatically answer "yes" if confirmations are needed.
+      - python -m yini_test all --cases-root cases --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
 
   # ---------------------------------------------------------------------------
   # Run yini-test cases against yini-parser-python.

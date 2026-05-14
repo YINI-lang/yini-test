@@ -38,7 +38,7 @@ The adapter must:
 3. Write parsed JSON to standard output (`stdout`) on success.
 4. Write error output to standard error (`stderr`) on failure.
 5. Return exit code `0` on success.
-6. Return a non-zero exit code on failure.
+6. Return a non-zero exit code if parsing fails, validation fails, arguments are invalid, or the adapter itself fails.
 
 ---
 
@@ -77,7 +77,8 @@ Parse error at line 3, column 8: duplicate key "name"
 ```
 
 Requirements:
-- The JSON output must be valid and machine-readable.
+- On success, `stdout` must contain exactly one valid JSON document.
+- On failure, `stdout` should be empty.
 - The adapter should not print extra logging to `stdout`.
 - Any debug, warning, or error text should go to `stderr`.
 
