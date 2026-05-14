@@ -334,7 +334,7 @@ def run_invalid_case(
         details.append(f"stderr:\n{stderr}")
 
     message = (
-        f"Invalid case unexpectedly succeeded: {case.yini_path.name}\n"
+        f"Invalid case was expected to fail, but succeeded: \"{case.yini_path.name}\"\n"
         f"Command: {' '.join(command)}"
     )
 
