@@ -1,0 +1,5 @@
+# This document has no data.
+// This full-line slash comment also has no data.
+/*
+ * Block comments alone do not create data.
+ */
