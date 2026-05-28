@@ -135,6 +135,6 @@ tasks:
       - powershell -NoProfile -Command "if (Test-Path '.ruff_cache') { Remove-Item -Recurse -Force '.ruff_cache' }"
 
   clean:
-    desc: Run all cleanup tasks
+    desc: Delete caches only
     deps:
       - clean-cache
