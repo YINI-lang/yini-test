@@ -1,0 +1,8 @@
+@yini
+
+name = "lenient-root-before-section"
+enabled = true
+
+^ Application
+version = "1.0.0"
+status = "ready"

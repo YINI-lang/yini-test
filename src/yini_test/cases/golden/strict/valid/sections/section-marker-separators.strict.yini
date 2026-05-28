@@ -1,0 +1,15 @@
+@yini strict
+
+^ Root
+name = "strict-section-marker-separators"
+
+^_^ Api
+host = "localhost"
+
+^_^ Database
+port = 5432
+
+^_^_^ Pool
+maxConnections = 20
+
+/END

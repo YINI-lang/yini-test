@@ -1,0 +1,5 @@
+@yini
+
+^ Strings
+path = R"C:\Users\demo\AppData\Local"
+pattern = R"\d+\s+\w+"

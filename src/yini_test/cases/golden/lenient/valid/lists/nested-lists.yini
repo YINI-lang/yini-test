@@ -1,0 +1,8 @@
+@yini
+
+^ Lists
+matrix = [
+    [1, 2],
+    [3, 4]
+]
+groups = [["a", "b"], ["c"]]

@@ -1,0 +1,9 @@
+{
+  "Objects": {
+    "cache": {
+      "enabled": true,
+      "maxMb": 256,
+      "ttlSec": 30
+    }
+  }
+}

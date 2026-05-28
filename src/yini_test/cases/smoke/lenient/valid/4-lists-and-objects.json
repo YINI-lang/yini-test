@@ -1,0 +1,19 @@
+﻿{
+  "Config": {
+    "features": ["search", "logs", "metrics"],
+    "envVars": {
+      "env": "dev",
+      "db": "DataBase-2"
+    },
+    "thresholds": [0.1, 0.5, 0.9],
+    "cache": {
+      "enabled": true,
+      "maxMb": 256,
+      "timeoutSec": 30
+    },
+    "Debug": {
+      "isDebug": false,
+      "debugPrefix": "\t"
+    }
+  }
+}

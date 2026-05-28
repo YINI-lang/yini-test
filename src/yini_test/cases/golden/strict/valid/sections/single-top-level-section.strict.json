@@ -1,0 +1,7 @@
+{
+  "Application": {
+    "name": "strict-section-single",
+    "enabled": true,
+    "environment": "production"
+  }
+}

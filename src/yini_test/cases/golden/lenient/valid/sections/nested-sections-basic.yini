@@ -1,0 +1,12 @@
+@yini
+
+^ Application
+name = "section-nested-basic"
+
+^^ Server
+host = "127.0.0.1"
+port = 8080
+
+^^ Database
+engine = "sqlite"
+path = "./data/app.db"

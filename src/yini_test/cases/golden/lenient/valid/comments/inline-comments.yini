@@ -1,0 +1,6 @@
+@yini
+
+^ Application # Inline hash comment after section.
+name = "lenient-inline-comments" // Inline slash comment after string.
+version = 1.2 # Inline hash comment after number.
+enabled = true// Inline slash comment without spacing.

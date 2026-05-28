@@ -1,0 +1,18 @@
+{
+    "Scalars": {
+        "binaryValue": 10,
+        "booleanFalseValue": false,
+        "booleanOffValue": false,
+        "booleanOnValue": true,
+        "booleanTrueValue": true,
+        "decimalWithSeparator": 1000000,
+        "emptyValue": null,
+        "floatValue": 3.14,
+        "hexValue": 255,
+        "integerValue": 42,
+        "negativeIntegerValue": -7,
+        "nullValue": null,
+        "rawStringValue": "C:\\Users\\demo\\app",
+        "stringValue": "hello"
+    }
+}

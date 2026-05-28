@@ -1,0 +1,8 @@
+@yini strict
+
+^ Values
+lower = null
+upper = NULL
+mixed = NuLl
+
+/END

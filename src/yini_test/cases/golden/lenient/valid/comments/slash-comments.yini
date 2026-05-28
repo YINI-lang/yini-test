@@ -1,0 +1,7 @@
+@yini
+
+// Full-line slash comment before a section.
+^ Application
+// Full-line slash comment before a member.
+name = "lenient-slash-comments"
+enabled = true

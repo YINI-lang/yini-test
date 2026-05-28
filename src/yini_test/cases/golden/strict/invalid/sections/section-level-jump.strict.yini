@@ -1,0 +1,9 @@
+@yini strict
+
+^ Root
+name = "strict-section-level-jump"
+
+^^^ GrandChild
+value = true
+
+/END

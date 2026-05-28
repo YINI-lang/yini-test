@@ -1,0 +1,7 @@
+@yini
+
+; Full-line semicolon comment before a section.
+^ Application
+; Full-line semicolon comment before a member.
+name = "lenient-semicolon-comments"
+enabled = true

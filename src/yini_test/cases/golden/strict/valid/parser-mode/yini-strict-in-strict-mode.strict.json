@@ -1,0 +1,7 @@
+{
+  "App": {
+    "name": "yini-strict-in-strict-mode",
+    "mode": "strict",
+    "enabled": true
+  }
+}

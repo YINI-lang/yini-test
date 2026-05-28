@@ -1,0 +1,5 @@
+@yini
+
+name = "lenient-root-members-only"
+enabled = true
+port = 8080

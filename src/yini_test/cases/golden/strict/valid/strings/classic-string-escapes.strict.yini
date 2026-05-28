@@ -1,0 +1,8 @@
+@yini strict
+
+^ Strings
+tab = C"alpha\tbeta"
+newline = C"line one\nline two"
+quote = C"She said \"hello\"."
+
+/END

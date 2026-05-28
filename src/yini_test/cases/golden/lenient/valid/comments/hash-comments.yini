@@ -1,0 +1,7 @@
+@yini
+
+# Full-line hash comment before a section.
+^ Application
+# Full-line hash comment before a member.
+name = "lenient-hash-comments"
+enabled = true

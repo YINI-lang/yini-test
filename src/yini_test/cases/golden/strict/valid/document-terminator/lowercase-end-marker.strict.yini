@@ -1,0 +1,7 @@
+@yini strict
+
+^ Document
+name = "strict-lowercase-end-marker"
+status = "complete"
+
+/end

@@ -1,0 +1,17 @@
+{
+  "Root": {
+    "name": "section-marker-separators",
+    "ChildWithIndent": {
+      "value": "indented child"
+    },
+    "ChildWithoutIndent": {
+      "value": "unindented child",
+      "GrandChild": {
+        "value": "grandchild after compact marker"
+      }
+    }
+  },
+  "SecondRoot": {
+    "name": "sibling top-level section"
+  }
+}

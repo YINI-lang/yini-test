@@ -1,0 +1,11 @@
+@yini strict
+
+^ Keys
+simple = "simple"
+snake_case = "snake"
+camelCase = "camel"
+PascalCase = "pascal"
+key123 = "digits after first character"
+_private = "leading underscore"
+
+/END

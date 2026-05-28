@@ -1,0 +1,6 @@
+@yini strict
+
+^ Numbers
+value = 0xGG
+
+/END

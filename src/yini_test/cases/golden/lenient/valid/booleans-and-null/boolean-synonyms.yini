@@ -1,0 +1,9 @@
+@yini
+
+^ Values
+trueValue = true
+falseValue = false
+yesValue = yes
+noValue = no
+onValue = on
+offValue = off

@@ -1,0 +1,6 @@
+@yini relaxed
+
+^ App
+name = "yini-unknown-in-lenient-mode"
+mode = "lenient"
+enabled = true

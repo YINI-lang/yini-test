@@ -1,0 +1,7 @@
+{
+  "App": {
+    "name": "plain-yini-marker",
+    "mode": "lenient",
+    "enabled": true
+  }
+}

@@ -1,0 +1,6 @@
+@yini strict
+
+^ Strings
+message = "this string never closes
+
+/END

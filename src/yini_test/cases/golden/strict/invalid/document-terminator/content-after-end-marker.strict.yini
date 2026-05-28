@@ -1,0 +1,10 @@
+@yini strict
+
+^ Document
+name = "strict-content-after-end-marker"
+status = "complete"
+
+/END
+
+^ Extra
+name = "not allowed after terminator"

@@ -1,0 +1,14 @@
+{
+  "Root": {
+    "name": "strict-section-marker-separators",
+    "Api": {
+      "host": "localhost"
+    },
+    "Database": {
+      "port": 5432,
+      "Pool": {
+        "maxConnections": 20
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+@yini strict
+
+^ Application
+hashText = "value # not a comment"
+slashText = "value // not a comment"
+blockText = "value /* not a comment */"
+
+/END

@@ -1,0 +1,6 @@
+{
+  "Application": {
+    "name": "lenient-hash-comments",
+    "enabled": true
+  }
+}

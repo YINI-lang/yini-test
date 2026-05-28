@@ -1,0 +1,6 @@
+{
+  "Concat": {
+    "enabledLabel": "enabled-true",
+    "disabledLabel": "disabled-false"
+  }
+}

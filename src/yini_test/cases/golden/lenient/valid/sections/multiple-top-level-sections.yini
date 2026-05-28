@@ -1,0 +1,13 @@
+@yini
+
+^ Application
+name = "section-multiple"
+version = "1.0.0"
+
+^ Server
+host = "localhost"
+port = 8080
+
+^ Logging
+level = "info"
+format = "json"

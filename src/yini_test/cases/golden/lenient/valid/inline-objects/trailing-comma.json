@@ -1,0 +1,8 @@
+{
+  "Objects": {
+    "cache": {
+      "enabled": true,
+      "maxMb": 256
+    }
+  }
+}

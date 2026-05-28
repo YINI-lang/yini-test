@@ -1,0 +1,5 @@
+@yini strict
+
+^ Document
+name = "strict-missing-end-marker"
+status = "incomplete"

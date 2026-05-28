@@ -1,0 +1,6 @@
+{
+  "Application": {
+    "name": "strict-block-comments",
+    "enabled": true
+  }
+}

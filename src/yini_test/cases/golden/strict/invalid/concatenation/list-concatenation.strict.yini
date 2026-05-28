@@ -1,0 +1,6 @@
+@yini strict
+
+^ Concat
+items = ["a"] + ["b"]
+
+/END

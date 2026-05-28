@@ -6,16 +6,17 @@ from pathlib import Path
 
 import pytest
 
-from yini_test.runner import (
-    InvalidCase,
-    ValidCase,
-    _resolve_suite_names,
+from yini_test.adapters import render_adapter_command
+from yini_test.diffing import make_diff
+from yini_test.discovery import (
     discover_invalid_cases,
     discover_valid_cases,
+    discover_warning_cases,
     get_expected_json_path,
-    make_diff,
-    render_adapter_command,
+    get_expected_warning_path,
 )
+from yini_test.models import CaseResult, InvalidCase, ValidCase, WarningCase
+from yini_test.runner import run_case_group, run_suite, _resolve_suite_names
 
 
 def test_get_expected_json_path_returns_matching_json_path(tmp_path: Path) -> None:
@@ -49,7 +50,7 @@ def test_get_expected_json_path_raises_clear_error_when_json_file_is_missing(
     # Assert.
     message = str(exc_info.value)
 
-    assert "Expected JSON file not found for valid YINI case." in message
+    assert "Expected JSON file not found for YINI case." in message
     assert f'yini_path: "{yini_path}"' in message
     assert f'expected_json_path: "{expected_json_path}"' in message
     assert "matching .json file" in message

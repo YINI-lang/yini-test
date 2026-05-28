@@ -1,40 +1,41 @@
 """
 Core execution logic for yini_test.
 
-This file contains the main test-running behavior.
+This module orchestrates suite execution. Case discovery, adapter execution,
+expected-output loading, and diff formatting live in dedicated helper modules.
 """
 
 # src/yini_test/runner.py
 from __future__ import annotations
 
-from dataclasses import dataclass
 from pathlib import Path
-import difflib
-import json
-import subprocess
 import time
-from typing import Any
 
+# Remember this importing order:
+#   1. standard libraries
+#   2. blank line
+#   3. local package imports, grouped by module
+
+from yini_test.adapters import (
+    parse_adapter_stdout_json,
+    render_adapter_command,
+    run_adapter,
+    run_adapter_raw,
+)
+from yini_test.diffing import make_diff
+from yini_test.discovery import (
+    discover_invalid_cases,
+    discover_valid_cases,
+    discover_warning_cases,
+)
+from yini_test.expectations import (
+    load_expected_json,
+    load_expected_warnings,
+    match_expected_warnings,
+)
+from yini_test.models import CaseResult, InvalidCase, ValidCase, WarningCase
 from yini_test.utils.executables import resolve_executable
-
-
-@dataclass(frozen=True, slots=True)
-class ValidCase:
-    yini_path: Path
-    json_path: Path
-
-
-@dataclass(frozen=True, slots=True)
-class InvalidCase:
-    yini_path: Path
-
-
-@dataclass(frozen=True, slots=True)
-class CaseResult:
-    case_path: Path
-    passed: bool
-    message: str = ""
-
+from yini_test.utils.formatting import format_duration
 
 def run_suite(
     suite: str,
@@ -106,7 +107,7 @@ def run_suite(
     print()
     print(
         f"Summary: {total_passed} passed, {total_failed} failed, "
-        f"{total} total, duration {_format_duration(duration)}"
+        f"{total} total, duration {format_duration(duration)}"
     )
 
     return 0 if total_failed == 0 else 1
@@ -127,6 +128,11 @@ def run_case_group(
     - cases/smoke/strict
     - cases/golden/lenient
     - cases/golden/strict
+
+    Case categories:
+    - valid: must succeed and match .json
+    - warning: must succeed, match .json, and match warning expectations
+    - invalid: must fail
     """
 
     suite_dir = cases_root / suite_name / mode
@@ -138,12 +144,20 @@ def run_case_group(
         raise NotADirectoryError(f"Case path is not a directory: {suite_dir}")
 
     valid_cases = discover_valid_cases(suite_dir / "valid")
+    warning_cases = discover_warning_cases(suite_dir / "warning")
     invalid_cases = discover_invalid_cases(suite_dir / "invalid")
 
     results: list[CaseResult] = []
 
     for case in valid_cases:
         result = run_valid_case(case, adapter_tokens=adapter_tokens, mode=mode)
+        results.append(result)
+
+        if fail_fast and not result.passed:
+            return results
+
+    for case in warning_cases:
+        result = run_warning_case(case, adapter_tokens=adapter_tokens, mode=mode)
         results.append(result)
 
         if fail_fast and not result.passed:
@@ -157,83 +171,6 @@ def run_case_group(
             return results
 
     return results
-
-
-def get_expected_json_path(yini_path: Path) -> Path:
-    """
-    Return the expected JSON output path for a valid YINI case.
-
-    Valid cases are golden tests. Therefore, each valid .yini input file
-    must have a matching .json expected-output file beside it.
-
-    Example:
-
-        2-basic-config.yini
-        2-basic-config.json
-    """
-
-    json_path = yini_path.with_suffix(".json")
-
-    if not json_path.is_file():
-        raise FileNotFoundError(
-            "Expected JSON file not found for valid YINI case.\n"
-            f"  yini_path: \"{yini_path}\",\n"
-            f"  expected_json_path: \"{json_path}\"\n"
-            "  Hint: Every valid .yini case must have a matching .json file "
-            "with the same basename."
-        )
-
-    return json_path
-
-
-def discover_valid_cases(valid_dir: Path) -> list[ValidCase]:
-    """
-    Discover valid YINI test cases.
-
-    Each valid case must consist of:
-
-        example.yini
-        example.json
-
-    The .yini file is the input.
-    The .json file is the expected parser output.
-    """
-
-    cases: list[ValidCase] = []
-
-    if not valid_dir.exists():
-        return cases
-
-    if not valid_dir.is_dir():
-        raise NotADirectoryError(f"Valid case path is not a directory: {valid_dir}")
-
-    for yini_path in sorted(valid_dir.glob("*.yini")):
-        json_path = get_expected_json_path(yini_path)
-        cases.append(ValidCase(yini_path=yini_path, json_path=json_path))
-
-    return cases
-
-
-def discover_invalid_cases(invalid_dir: Path) -> list[InvalidCase]:
-    """
-    Discover invalid YINI test cases.
-
-    Each invalid case must contain one .yini file.
-
-    Invalid cases do not need matching .json files because they are expected
-    to fail parsing.
-    """
-
-    if not invalid_dir.exists():
-        return []
-
-    if not invalid_dir.is_dir():
-        raise NotADirectoryError(f"Invalid case path is not a directory: {invalid_dir}")
-
-    return [
-        InvalidCase(yini_path=path)
-        for path in sorted(invalid_dir.glob("*.yini"))
-    ]
 
 
 def run_valid_case(
@@ -277,6 +214,90 @@ def run_valid_case(
     )
 
 
+def run_warning_case(
+    case: WarningCase,
+    adapter_tokens: list[str],
+    mode: str,
+) -> CaseResult:
+    """
+    Run a warning case.
+
+    Expected behavior:
+    - Adapter succeeds.
+    - Adapter outputs valid JSON.
+    - Actual JSON matches expected JSON.
+    - Adapter emits the expected warning diagnostics.
+    """
+
+    expected_json = load_expected_json(case.json_path)
+    expected_warnings = load_expected_warnings(case.warning_path)
+
+    print(f"RUN   \"{case.yini_path}\"")
+    try:
+        adapter_result = run_adapter_raw(
+            adapter_tokens=adapter_tokens,
+            input_path=case.yini_path,
+            mode=mode,
+        )
+    except RuntimeError as exc:
+        return CaseResult(
+            case_path=case.yini_path,
+            passed=False,
+            message=str(exc),
+        )
+
+    if adapter_result.returncode != 0:
+        return CaseResult(
+            case_path=case.yini_path,
+            passed=False,
+            message=(
+                f"Adapter failed for warning case: {case.yini_path.name}\n"
+                f"stderr:\n{adapter_result.stderr.strip()}"
+            ),
+        )
+
+    try:
+        actual_json = parse_adapter_stdout_json(
+            adapter_result.stdout,
+            case_name=case.yini_path.name,
+        )
+    except RuntimeError as exc:
+        return CaseResult(
+            case_path=case.yini_path,
+            passed=False,
+            message=str(exc),
+        )
+
+    if actual_json != expected_json:
+        diff = make_diff(expected_json, actual_json)
+        return CaseResult(
+            case_path=case.yini_path,
+            passed=False,
+            message=(
+                f"Output mismatch for warning case: {case.yini_path.name}\n"
+                f"{diff}"
+            ),
+        )
+
+    warning_error = match_expected_warnings(
+        expected_warnings=expected_warnings,
+        stderr=adapter_result.stderr,
+    )
+
+    if warning_error is not None:
+        return CaseResult(
+            case_path=case.yini_path,
+            passed=False,
+            message=(
+                f"Warning mismatch for warning case: {case.yini_path.name}\n"
+                f"{warning_error}\n"
+                f"stderr:\n{adapter_result.stderr.strip()}"
+            ),
+        )
+
+    return CaseResult(case_path=case.yini_path, passed=True)
+
+
 def run_invalid_case(
     case: InvalidCase,
     adapter_tokens: list[str],
@@ -286,7 +307,7 @@ def run_invalid_case(
     Run an invalid case.
 
     Expected behavior:
-    - adapter fails with non-zero exit code
+    - Adapter fails with a non-zero exit code.
     """
 
     command = render_adapter_command(
@@ -299,33 +320,25 @@ def run_invalid_case(
 
     print(f"RUN   \"{case.yini_path}\"")
     try:
-        # Run command line
-        completed = subprocess.run(
-            command,
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            timeout=10,
+        adapter_result = run_adapter_raw(
+            adapter_tokens=adapter_tokens,
+            input_path=case.yini_path,
+            mode=mode,
         )
-    except subprocess.TimeoutExpired:
+    except RuntimeError as exc:
         return CaseResult(
             case_path=case.yini_path,
             passed=False,
-            message=(
-                f"Adapter timed out for invalid case: {case.yini_path.name}\n"
-                f"Command: {' '.join(command)}\n"
-                "Hint: The adapter may be waiting for interactive input, "
-                "or the parser process may not be exiting."
-            ),
+            message=str(exc),
         )
 
-    if completed.returncode != 0:
+    if adapter_result.returncode != 0:
         return CaseResult(case_path=case.yini_path, passed=True)
 
-    stdout = completed.stdout.strip()
-    stderr = completed.stderr.strip()
-
     details = []
+
+    stdout = adapter_result.stdout.strip()
+    stderr = adapter_result.stderr.strip()
 
     if stdout:
         details.append(f"stdout:\n{stdout}")
@@ -346,319 +359,6 @@ def run_invalid_case(
         passed=False,
         message=message,
     )
-
-
-def load_expected_json(path: Path) -> Any:
-    """
-    Load the expected JSON output for a valid case.
-
-    The expected JSON file may contain a UTF-8 BOM if it was created by
-    Windows PowerShell or some editors. Using utf-8-sig accepts both normal
-    UTF-8 and UTF-8 with BOM.
-    """
-
-    try:
-        # utf-8-sig can read both:
-        # - UTF-8 without BOM
-        # - UTF-8 with BOM
-        with path.open("r", encoding="utf-8-sig") as f:
-            return json.load(f)
-    except json.JSONDecodeError as exc:
-        raise RuntimeError(
-            "Expected JSON file is not valid JSON.\n"
-            f"  json_path: \"{path}\"\n"
-            f"  error: {exc}"
-        ) from exc
-
-
-def run_adapter(
-    adapter_tokens: list[str],
-    input_path: Path,
-    mode: str,
-) -> Any:
-    """
-    Run the adapter for a valid case and return parsed JSON output.
-
-    Raises RuntimeError if the adapter:
-    - exits with non-zero status
-    - prints no output
-    - prints invalid JSON
-    """
-
-    command = render_adapter_command(
-        adapter_tokens=adapter_tokens,
-        input_path=input_path,
-        mode=mode,
-    )
-
-    command[0] = resolve_executable(command[0])
-
-    try:
-        # Run command line
-        completed = subprocess.run(
-            command,
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            timeout=10,
-        )
-    except subprocess.TimeoutExpired as exc:
-        raise RuntimeError(
-            f"Adapter timed out for valid case: {input_path.name}\n"
-            f"Command: {' '.join(command)}\n"
-            "Hint: The adapter may be waiting for interactive input, "
-            "or the parser process may not be exiting."
-        ) from exc
-
-    if completed.returncode != 0:
-        stderr = completed.stderr.strip()
-        stdout = completed.stdout.strip()
-        details = stderr or stdout or "No error output."
-
-        raise RuntimeError(
-            f"Adapter failed for valid case: {input_path.name}\n"
-            f"Command: {' '.join(command)}\n"
-            f"Details: {details}"
-        )
-
-    stdout = completed.stdout.strip()
-
-    if not stdout:
-        raise RuntimeError(
-            f"Adapter produced no JSON output for valid case: {input_path.name}"
-        )
-
-    try:
-        return json.loads(stdout)
-    except json.JSONDecodeError as exc:
-        raise RuntimeError(
-            f"Adapter output was not valid JSON for case: {input_path.name}\n"
-            f"Error: {exc}\n"
-            f"Output:\n{stdout}"
-        ) from exc
-
-
-def render_adapter_command(
-    adapter_tokens: list[str],
-    input_path: Path,
-    mode: str,
-) -> list[str]:
-    """
-    Replace placeholders in adapter command tokens.
-
-    Supported placeholders:
-    - {input}
-    - {mode}
-    """
-
-    if not adapter_tokens:
-        raise ValueError("Adapter command is empty.")
-
-    return [
-        token.format(input=str(input_path), mode=mode)
-        for token in adapter_tokens
-    ]
-
-
-def make_diff(expected: Any, actual: Any) -> str:
-    """
-    Create a readable diff between expected JSON and parser output.
-
-    The raw unified diff hunk header, for example:
-
-        @@ -1 +1,49 @@
-
-    is replaced with a clearer yini-test-specific line:
-
-        Mismatched block: Expected line 1 does not match parser output lines 1-49.
-    """
-
-    expected_text = json.dumps(
-        expected,
-        indent=4,
-        ensure_ascii=False,
-        sort_keys=True,
-    )
-    actual_text = json.dumps(
-        actual,
-        indent=4,
-        ensure_ascii=False,
-        sort_keys=True,
-    )
-
-    diff_lines = list(
-        difflib.unified_diff(
-            expected_text.splitlines(),
-            actual_text.splitlines(),
-            fromfile="expected",
-            tofile="parser output",
-            lineterm="",
-        )
-    )
-
-    readable_lines = [
-        _format_diff_hunk_header(line) if line.startswith("@@ ") else line
-        for line in diff_lines
-    ]
-
-    spaced_lines = _add_spacing_around_diff_blocks(readable_lines)
-
-    return "\n".join(spaced_lines)
-
-
-def _add_spacing_around_diff_blocks(lines: list[str]) -> list[str]:
-    """
-    Add blank lines around expected/parser-output diff blocks.
-
-    This makes output like this:
-
-        -{}
-        +{
-        +    "App": {}
-        +}
-
-    easier to read as:
-
-        -{}
-
-        +{
-        +    "App": {}
-        +}
-
-    Diff headers such as "--- expected" and "+++ parser output" are not treated
-    as removed/added content lines.
-    """
-
-    result: list[str] = []
-    previous_kind: str | None = None
-
-    for line in lines:
-        current_kind = _get_diff_content_kind(line)
-
-        # Add a blank line before the first removed/added content block.
-        if current_kind in {"removed", "added"} and previous_kind not in {
-            "removed",
-            "added",
-        }:
-            if result and result[-1] != "":
-                result.append("")
-
-        # Add a blank line between a removed block and an added block.
-        if (
-            current_kind in {"removed", "added"}
-            and previous_kind in {"removed", "added"}
-            and current_kind != previous_kind
-        ):
-            if result and result[-1] != "":
-                result.append("")
-
-        result.append(line)
-        previous_kind = current_kind
-
-    # Add one blank line after the final removed/added content block.
-    if previous_kind in {"removed", "added"}:
-        result.append("")
-
-    return result
-
-
-def _get_diff_content_kind(line: str) -> str | None:
-    """
-    Return whether a diff line is removed content or added content.
-
-    This intentionally ignores unified diff file headers:
-
-        --- expected
-        +++ parser output
-    """
-
-    if line.startswith("--- ") or line.startswith("+++ "):
-        return None
-
-    if line.startswith("-"):
-        return "removed"
-
-    if line.startswith("+"):
-        return "added"
-
-    return None
-
-
-def _format_diff_hunk_header(line: str) -> str:
-    """
-    Convert a unified diff hunk header into a clearer message.
-
-    Example:
-
-        @@ -1 +1,49 @@
-
-    becomes:
-
-        Changed block: Expected line 1 does not match parser output lines 1-49.
-    """
-
-    parts = line.split()
-
-    if len(parts) < 3:
-        return line
-
-    expected_range = parts[1]
-    actual_range = parts[2]
-
-    if not expected_range.startswith("-") or not actual_range.startswith("+"):
-        return line
-
-    expected_text = _format_diff_range(expected_range[1:])
-    actual_text = _format_diff_range(actual_range[1:])
-
-    return (
-        f"Mismatched block: Expected {expected_text} does not match "
-        f"parser output {actual_text}."
-    )
-
-
-def _format_diff_range(raw_range: str) -> str:
-    """
-    Format a unified diff line range.
-
-    Examples:
-    - "1"    -> "line 1"
-    - "1,1"  -> "line 1"
-    - "1,49" -> "lines 1-49"
-    - "5,3"  -> "lines 5-7"
-    """
-
-    if "," not in raw_range:
-        return f"line {raw_range}"
-
-    start_text, count_text = raw_range.split(",", 1)
-
-    start = int(start_text)
-    count = int(count_text)
-
-    if count == 1:
-        return f"line {start}"
-
-    end = start + count - 1
-
-    return f"lines {start}-{end}"
-
-
-def _format_duration(seconds: float) -> str:
-    """
-    Format a duration in a compact human-readable form.
-    """
-
-    if seconds < 1:
-        return f"{seconds * 1000:.0f} ms"
-
-    if seconds < 60:
-        return f"{seconds:.2f} s"
-
-    minutes = int(seconds // 60)
-    remaining_seconds = seconds % 60
-
-    return f"{minutes} min {remaining_seconds:.2f} s"
 
 
 def _resolve_suite_names(suite: str) -> list[str]:

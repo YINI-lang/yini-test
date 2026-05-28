@@ -1,0 +1,6 @@
+{
+  "Application": {
+    "name": "lenient-slash-comments",
+    "enabled": true
+  }
+}

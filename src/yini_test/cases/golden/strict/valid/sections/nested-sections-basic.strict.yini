@@ -1,0 +1,14 @@
+@yini strict
+
+^ Application
+name = "strict-section-nested-basic"
+
+^^ Server
+host = "127.0.0.1"
+port = 8443
+
+^^ Database
+engine = "postgres"
+schema = "public"
+
+/END

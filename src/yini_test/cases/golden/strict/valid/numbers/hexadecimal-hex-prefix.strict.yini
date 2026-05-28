@@ -1,0 +1,7 @@
+@yini strict
+
+^ Numbers
+color = hex:FF_AA_00
+mask = hex:0F
+
+/END

@@ -1,0 +1,6 @@
+@yini
+
+^ Lists
+strings = ["alpha", "beta", "gamma"]
+numbers = [1, 2, 3]
+flags = [true, off, yes, no]

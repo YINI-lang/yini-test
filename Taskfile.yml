@@ -6,6 +6,9 @@
 
 version: '3'
 
+vars:
+  PATH_CASES: src/yini_test/cases
+
 tasks:
   default:
     desc: Show available tasks
@@ -33,12 +36,17 @@ tasks:
   # ---------------------------------------------------------------------------
 
   test:
-    desc: Run unit/integration tests for yini-test itself
+    desc: Run unit/integration tests for yini-test itself with warnings treated as errors
+    cmds:
+      - python -m pytest -v -W error
+
+  test-relaxed:
+    desc: Run unit/integration tests without promoting warnings to errors
     cmds:
       - python -m pytest -v
 
   test-debug:
-    desc: Run unit/integration tests for yini-test itself
+    desc: Run unit/integration tests for yini-test itself with stdout/stderr enabled
     cmds:
       - python -m pytest -v -s
 
@@ -53,46 +61,91 @@ tasks:
     cmds:
       - cmd /c "set MYPYPATH=src&& python -m mypy -p yini_test --explicit-package-bases --ignore-missing-imports"
 
+  format-check:
+    desc: Check code formatting with Ruff
+    cmds:
+      - python -m ruff format --check src tests
+
+  format:
+    desc: Format code with Ruff
+    cmds:
+      - python -m ruff format src tests
+
   check:
     desc: Run all project checks for yini-test itself
-    deps:
-      - lint
-      - typecheck
-      - test
+    cmds:
+      - task lint
+      - task format-check
+      - task typecheck
+      - task test
 
   # ---------------------------------------------------------------------------
   # Run yini-test cases against yini-parser-typescript.
   # ---------------------------------------------------------------------------
 
-  run-smoke-typescript:
-    desc: Run smoke cases against yini-parser-typescript
+  run-smoke-typescript-lenient:
+    desc: Run lenient smoke cases against yini-parser-typescript
     cmds:
-      # npx --yes means automatically answer "yes" if confirmations are needed.
-      - python -m yini_test smoke --cases-root cases --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
+      - python -m yini_test smoke --cases-root {{.PATH_CASES}} --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
+
+  run-smoke-typescript-strict:
+    desc: Run strict smoke cases against yini-parser-typescript
+    cmds:
+      - python -m yini_test smoke --strict --cases-root {{.PATH_CASES}} --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
+
+  run-all-typescript-lenient:
+    desc: Run all lenient cases against yini-parser-typescript
+    cmds:
+      - python -m yini_test all --cases-root {{.PATH_CASES}} --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
+
+  run-all-typescript-strict:
+    desc: Run all strict cases against yini-parser-typescript
+    cmds:
+      - python -m yini_test all --strict --cases-root {{.PATH_CASES}} --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
 
   run-all-typescript:
-    desc: Run all available cases against yini-parser-typescript
+    desc: Run all lenient and strict cases against yini-parser-typescript
     cmds:
-      # npx --yes means automatically answer "yes" if confirmations are needed.
-      - python -m yini_test all --cases-root cases --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
+      - task run-all-typescript-lenient
+      - task run-all-typescript-strict
 
   # ---------------------------------------------------------------------------
   # Run yini-test cases against yini-parser-python.
   # ---------------------------------------------------------------------------
 
-  run-smoke-python:
-    desc: Run smoke cases against yini-parser-python
+  run-smoke-python-lenient:
+    desc: Run lenient smoke cases against yini-parser-python
     env:
       PYTHONPATH: src
     cmds:
-      - python -m yini_test smoke --cases-root cases --adapter python ../yini-parser-python/tools/yini_parser_adapter.py --input {input} --mode {mode}
+      - python -m yini_test smoke --cases-root {{.PATH_CASES}} --adapter python ../yini-parser-python/tools/yini_parser_adapter.py --input {input} --mode {mode}
+
+  run-smoke-python-strict:
+    desc: Run strict smoke cases against yini-parser-python
+    env:
+      PYTHONPATH: src
+    cmds:
+      - python -m yini_test smoke --strict --cases-root {{.PATH_CASES}} --adapter python ../yini-parser-python/tools/yini_parser_adapter.py --input {input} --mode {mode}
+
+  run-all-python-lenient:
+    desc: Run all lenient cases against yini-parser-python
+    env:
+      PYTHONPATH: src
+    cmds:
+      - python -m yini_test all --cases-root {{.PATH_CASES}} --adapter python ../yini-parser-python/tools/yini_parser_adapter.py --input {input} --mode {mode}
+
+  run-all-python-strict:
+    desc: Run all strict cases against yini-parser-python
+    env:
+      PYTHONPATH: src
+    cmds:
+      - python -m yini_test all --strict --cases-root {{.PATH_CASES}} --adapter python ../yini-parser-python/tools/yini_parser_adapter.py --input {input} --mode {mode}
 
   run-all-python:
-    desc: Run all available cases against yini-parser-python
-    env:
-      PYTHONPATH: src
+    desc: Run all lenient and strict cases against yini-parser-python
     cmds:
-      - python -m yini_test all --cases-root cases --adapter python ../yini-parser-python/tools/yini_parser_adapter.py --input {input} --mode {mode}
+      - task run-all-python-lenient
+      - task run-all-python-strict
 
   # ---------------------------------------------------------------------------
   # Convenience aliases.
@@ -110,15 +163,15 @@ tasks:
 
   adapters-smoke:
     desc: Run smoke cases against all configured parser adapters
-    deps:
-      - run-smoke-typescript
-      - run-smoke-python
+    cmds:
+      - task run-smoke-typescript
+      - task run-smoke-python
 
   adapters-all:
     desc: Run all available cases against all configured parser adapters
-    deps:
-      - run-all-typescript
-      - run-all-python
+    cmds:
+      - task run-all-typescript
+      - task run-all-python
 
   # ---------------------------------------------------------------------------
   # Cleanup.

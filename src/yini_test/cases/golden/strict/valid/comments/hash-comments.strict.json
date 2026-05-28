@@ -1,0 +1,6 @@
+{
+  "Application": {
+    "name": "strict-hash-comments",
+    "enabled": true
+  }
+}

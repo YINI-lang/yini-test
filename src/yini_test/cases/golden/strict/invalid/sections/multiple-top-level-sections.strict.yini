@@ -1,0 +1,9 @@
+@yini strict
+
+^ Application
+name = "strict-multiple-top-level-sections"
+
+^ Runtime
+environment = "production"
+
+/END

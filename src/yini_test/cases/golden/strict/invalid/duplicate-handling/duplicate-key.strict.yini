@@ -1,0 +1,7 @@
+@yini strict
+
+^ Application
+name = "first-name"
+name = "second-name"
+
+/END

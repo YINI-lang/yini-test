@@ -1,0 +1,25 @@
+@yini
+
+// Full-line slash comment.
+# Full-line hash comment.
+; Full-line semicolon comment.
+
+/*
+ * Block comment before the section.
+ */
+
+^ App
+
+// Comment before a member.
+name = "Demo App" // Inline slash comment.
+version = 1.0     # Inline hash comment.
+
+message = "This # is not a comment, and this // is not a comment."
+
+/*
+ * Block comment between members.
+ */
+
+path = "/tmp/app"
+
+/END

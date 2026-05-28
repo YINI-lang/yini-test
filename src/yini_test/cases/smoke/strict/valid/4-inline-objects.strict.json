@@ -1,0 +1,45 @@
+﻿{
+  "Package": {
+    "name": "@pear/toolkit",
+    "version": "0.1.0",
+    "description": "Shared command-line tools and libraries for Pear services",
+    "type": "module",
+    "private": false,
+    "license": "Apache-2.0",
+
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": ["dist", "README.md", "LICENSE"],
+
+    "scripts": {
+      "build": "tsc -p tsconfig.json",
+      "test": "vitest run",
+      "lint": "eslint src tests",
+      "format": "prettier --write src tests",
+      "typecheck": "tsc --noEmit",
+      "clean": "rimraf dist"
+    },
+
+    "exports": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+
+    "devDependencies": {
+      "typescript": "^5.6.0",
+      "vitest": "^2.1.0",
+      "eslint": "^9.0.0",
+      "prettier": "^3.3.0",
+      "rimraf": "^6.0.0"
+    },
+
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/pear/pear-toolkit.git"
+    },
+
+    "engines": {
+      "node": ">=20"
+    }
+  }
+}

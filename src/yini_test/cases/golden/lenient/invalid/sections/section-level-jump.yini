@@ -1,0 +1,7 @@
+@yini
+
+^ Root
+name = "root"
+
+^^^ GrandChild
+value = true

@@ -1,0 +1,9 @@
+@yini strict
+
+^ Lists
+items = [
+    "alpha",
+    "beta",
+]
+
+/END

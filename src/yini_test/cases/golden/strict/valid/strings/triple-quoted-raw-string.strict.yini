@@ -1,0 +1,8 @@
+@yini strict
+
+^ Strings
+message = R"""Line one
+Line two with \n kept raw
+Line three"""
+
+/END

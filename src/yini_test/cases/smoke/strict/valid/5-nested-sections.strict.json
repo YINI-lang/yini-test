@@ -1,0 +1,57 @@
+﻿{
+  "Project": {
+    "name": "pear-suite",
+    "version": "0.1.0",
+    "description": "Shared tooling for Pear service packages",
+    "requiresPython": ">=3.10",
+    "license": "Apache-2.0",
+    "readme": "README.md",
+
+    "BuildSystem": {
+      "backend": "setuptools.build_meta",
+      "requires": ["setuptools>=69", "wheel"]
+    },
+
+    "Package": {
+      "include": ["pear_suite", "pear_suite.*"],
+      "exclude": ["tests", "tests.*"],
+      "sourceRoot": "src"
+    },
+
+    "Dependencies": {
+      "runtime": ["pydantic>=2.0", "httpx>=0.27"],
+      "dev": ["pytest", "ruff", "mypy", "build"]
+    },
+
+    "Scripts": {
+      "test": "python -m pytest",
+      "lint": "python -m ruff check src tests",
+      "format": "python -m ruff format src tests",
+      "typecheck": "python -m mypy src",
+      "build": "python -m build"
+    },
+
+    "Tooling": {
+      "pythonVersion": "3.12",
+      "strictTyping": true,
+      "lineCoverageTarget": 85,
+
+      "Pytest": {
+        "testPaths": ["tests"],
+        "addopts": "-v"
+      },
+
+      "Ruff": {
+        "lineLength": 100,
+        "targetVersion": "py310",
+        "select": ["E", "F", "I", "UP"]
+      },
+
+      "Mypy": {
+        "pythonVersion": "3.12",
+        "warnUnusedIgnores": true,
+        "strictOptional": true
+      }
+    }
+  }
+}

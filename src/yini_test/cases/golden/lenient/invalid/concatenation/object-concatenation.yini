@@ -1,0 +1,4 @@
+@yini
+
+^ Concat
+object = { value: "a" } + { value: "b" }

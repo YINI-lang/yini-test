@@ -1,0 +1,9 @@
+@yini strict
+
+rootMember = "This member appears before the required top-level section."
+
+^ App
+name = "root-member-before-section"
+enabled = true
+
+/END

@@ -1,0 +1,6 @@
+@yini strict
+
+name = "strict-root-members-only"
+enabled = true
+
+/END

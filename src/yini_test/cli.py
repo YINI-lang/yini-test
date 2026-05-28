@@ -25,6 +25,7 @@ Notes:
 - The --adapter option must be placed last because it captures the remaining command tokens.
 """
 
+# src/yini_test/cli.py
 from __future__ import annotations
 
 import argparse

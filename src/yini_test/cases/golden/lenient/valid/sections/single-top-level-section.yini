@@ -1,0 +1,6 @@
+@yini
+
+^ Application
+name = "section-single"
+enabled = true
+environment = "development"

@@ -1,0 +1,33 @@
+{
+  "Level01": {
+    "name": "level-01",
+    "Level02": {
+      "name": "level-02",
+      "Level03": {
+        "name": "level-03",
+        "Level04": {
+          "name": "level-04",
+          "Level05": {
+            "name": "level-05",
+            "Level06": {
+              "name": "level-06",
+              "Level07": {
+                "name": "level-07",
+                "Level08": {
+                  "name": "level-08",
+                  "Level09": {
+                    "name": "level-09",
+                    "Level10": {
+                      "name": "level-10",
+                      "depth": 10
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

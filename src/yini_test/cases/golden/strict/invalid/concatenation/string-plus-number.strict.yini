@@ -1,0 +1,6 @@
+@yini strict
+
+^ Concat
+label = "port-" + 8080
+
+/END

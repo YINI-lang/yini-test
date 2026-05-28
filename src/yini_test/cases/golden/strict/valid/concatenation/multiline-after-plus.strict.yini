@@ -1,0 +1,8 @@
+@yini strict
+
+^ Concat
+message = "hello" +
+    " " +
+    "world"
+
+/END

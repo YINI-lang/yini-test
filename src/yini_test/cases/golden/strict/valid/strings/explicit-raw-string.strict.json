@@ -1,0 +1,6 @@
+{
+  "Strings": {
+    "path": "C:\\Users\\demo\\AppData\\Local",
+    "pattern": "\\d+\\s+\\w+"
+  }
+}

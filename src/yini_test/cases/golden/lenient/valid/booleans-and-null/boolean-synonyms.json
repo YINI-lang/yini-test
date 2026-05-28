@@ -1,0 +1,10 @@
+{
+  "Values": {
+    "trueValue": true,
+    "falseValue": false,
+    "yesValue": true,
+    "noValue": false,
+    "onValue": true,
+    "offValue": false
+  }
+}

@@ -1,0 +1,7 @@
+@yini
+
+^ Objects
+cache = {
+    enabled: true,
+    maxMb: 256,
+}

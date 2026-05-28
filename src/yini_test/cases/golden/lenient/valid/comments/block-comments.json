@@ -1,0 +1,6 @@
+{
+  "Application": {
+    "name": "lenient-block-comments",
+    "enabled": true
+  }
+}

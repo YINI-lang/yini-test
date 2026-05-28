@@ -1,0 +1,8 @@
+@yini strict
+
+^ Numbers
+ratio = 0.75
+wholeWithFraction = 10.0
+scientific = 1.25e2
+
+/END

@@ -1,0 +1,7 @@
+@yini
+
+^ Document
+name = "lenient-optional-end-marker"
+status = "complete"
+
+/END

@@ -1,0 +1,8 @@
+@yini
+
+^ App
+name = "plain-yini-marker"
+mode = "strict"
+enabled = true
+
+/END

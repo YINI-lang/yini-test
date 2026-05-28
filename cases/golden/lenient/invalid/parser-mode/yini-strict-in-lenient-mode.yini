@@ -1,6 +1,0 @@
-@yini strict
-
-^ App
-name = "Demo App"
-
-/END

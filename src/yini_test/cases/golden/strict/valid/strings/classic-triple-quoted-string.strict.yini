@@ -1,0 +1,6 @@
+@yini strict
+
+^ Strings
+message = C"""Line one\nLine two\tTabbed"""
+
+/END

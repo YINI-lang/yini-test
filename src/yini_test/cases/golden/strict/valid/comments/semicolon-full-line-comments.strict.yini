@@ -1,0 +1,9 @@
+@yini strict
+
+; Full-line semicolon comment before a section.
+^ Application
+; Full-line semicolon comment before a member.
+name = "strict-semicolon-comments"
+enabled = true
+
+/END

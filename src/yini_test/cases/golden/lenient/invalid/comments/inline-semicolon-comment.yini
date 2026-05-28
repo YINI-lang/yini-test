@@ -1,0 +1,4 @@
+@yini
+
+^ Application
+name = "lenient-inline-semicolon-comment" ; Inline semicolon comments are not valid.

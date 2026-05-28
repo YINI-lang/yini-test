@@ -1,0 +1,5 @@
+@yini
+
+^ Document
+name = "lenient-missing-end-marker"
+status = "complete"

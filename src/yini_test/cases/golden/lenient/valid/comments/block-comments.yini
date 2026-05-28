@@ -1,0 +1,11 @@
+@yini
+
+/*
+ * Block comment before the section.
+ */
+^ Application
+name = "lenient-block-comments"
+/*
+ * Block comment between members.
+ */
+enabled = true

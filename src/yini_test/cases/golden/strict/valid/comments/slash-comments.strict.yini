@@ -1,0 +1,9 @@
+@yini strict
+
+// Full-line slash comment before a section.
+^ Application
+// Full-line slash comment before a member.
+name = "strict-slash-comments"
+enabled = true
+
+/END

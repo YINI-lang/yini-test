@@ -1,0 +1,6 @@
+{
+  "Application": {
+    "name": "lenient-semicolon-comments",
+    "enabled": true
+  }
+}

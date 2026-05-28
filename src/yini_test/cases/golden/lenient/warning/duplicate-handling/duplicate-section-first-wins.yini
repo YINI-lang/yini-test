@@ -1,0 +1,9 @@
+@yini
+
+^ Application
+name = "first-section"
+status = "kept"
+
+^ Application
+name = "second-section"
+debug = true

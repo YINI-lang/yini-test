@@ -1,0 +1,31 @@
+﻿{
+  "Service": {
+    "serviceId": "nebula-api",
+    "release": "3.2.1",
+    "debugMode": false,
+    "Network": {
+      "bindAddress": "127.0.0.1",
+      "bindPort": 8080,
+      "allowedOrigins": [
+        "https://example.com",
+        "http://localhost:3000"
+      ]
+    },
+    "Features": {
+      "enableSearch": true,
+      "experimental": null,
+      "flags": [
+        "new-ui",
+        "streaming-api"
+      ]
+    },
+    "Storage": {
+      "driver": "postgres",
+      "pool": {
+        "min": 2,
+        "max": 10,
+        "timeoutSec": 30
+      }
+    }
+  }
+}

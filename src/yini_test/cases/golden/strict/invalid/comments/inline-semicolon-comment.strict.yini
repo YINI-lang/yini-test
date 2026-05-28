@@ -1,0 +1,6 @@
+@yini strict
+
+^ Application
+name = "strict-inline-semicolon-comment" ; Inline semicolon comments are not valid.
+
+/END

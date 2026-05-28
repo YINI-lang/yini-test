@@ -1,0 +1,7 @@
+{
+  "Application": {
+    "name": "lenient-inline-comments",
+    "version": 1.2,
+    "enabled": true
+  }
+}

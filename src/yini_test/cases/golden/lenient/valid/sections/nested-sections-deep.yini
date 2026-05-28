@@ -1,0 +1,20 @@
+@yini
+
+^ Company
+name = "Acme Tools"
+
+^^ Platform
+name = "control-plane"
+
+^^^ Region
+name = "eu-north-1"
+
+^^^^ Cluster
+name = "primary"
+
+^^^^^ Service
+name = "api"
+
+^^^^^^ Endpoint
+path = "/v1/status"
+method = "GET"

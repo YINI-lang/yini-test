@@ -1,0 +1,8 @@
+@yini
+
+^ Objects
+service = {
+    name: "api",
+    cache: { enabled: true, maxMb: 256 },
+    limits: { retryCount: 3, timeoutSec: 30 }
+}

@@ -1,0 +1,8 @@
+@yini strict
+
+^ Strings
+doubleQuoted = "hello world"
+singleQuoted = 'hello world'
+empty = ""
+
+/END

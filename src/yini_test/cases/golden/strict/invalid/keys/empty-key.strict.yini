@@ -1,0 +1,6 @@
+@yini strict
+
+^ Keys
+= "missing key"
+
+/END

@@ -1,0 +1,5 @@
+@yini
+
+^ Concat
+emptyLabel = "value-" + null
+upperNullLabel = "value-" + NULL

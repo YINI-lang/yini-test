@@ -1,0 +1,8 @@
+@yini strict
+
+^ Numbers
+thousands = 1_000_000
+negative = -1_250
+decimal = 1_000.25
+
+/END

@@ -22,5 +22,15 @@ yini-test = "yini_test.cli:main"
 [tool.setuptools]
 package-dir = {"" = "src"}
 
+[tool.setuptools.package-data]
+yini_test = [
+  "cases/**/*.yini",
+  "cases/**/*.json",
+  "cases/**/*.md",
+]
+
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

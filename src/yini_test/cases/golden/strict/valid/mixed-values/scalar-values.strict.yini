@@ -1,0 +1,18 @@
+@yini strict
+
+^ Scalars
+stringValue = "hello"
+rawStringValue = R"C:\Users\demo\app"
+integerValue = 42
+negativeIntegerValue = -7
+floatValue = 3.14
+decimalWithSeparator = 1_000_000
+hexValue = 0xff
+binaryValue = 0b1010
+booleanTrueValue = true
+booleanFalseValue = false
+booleanOnValue = on
+booleanOffValue = off
+nullValue = null
+
+/END

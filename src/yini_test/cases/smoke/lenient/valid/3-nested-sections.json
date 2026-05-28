@@ -1,0 +1,20 @@
+﻿{
+  "Config": {
+    "str_title": "Program Title",
+    "Server": {
+      "str_name": "localhost",
+      "int_port": 8080
+    },
+    "Features": {
+      "is_search": true,
+      "is_logging": false,
+      "Testing": {
+        "is_enabled": true
+      }
+    }
+  },
+  "Paths": {
+    "str_home": "./",
+    "str_temp": "/tmp"
+  }
+}

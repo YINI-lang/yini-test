@@ -1,0 +1,13 @@
+@yini strict
+
+/*
+ * Block comment before the section.
+ */
+^ Application
+name = "strict-block-comments"
+/*
+ * Block comment between members.
+ */
+enabled = true
+
+/END

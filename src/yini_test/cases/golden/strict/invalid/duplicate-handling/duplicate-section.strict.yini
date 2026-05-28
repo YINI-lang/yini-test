@@ -1,0 +1,9 @@
+@yini strict
+
+^ Application
+name = "first-section"
+
+^ Application
+name = "second-section"
+
+/END

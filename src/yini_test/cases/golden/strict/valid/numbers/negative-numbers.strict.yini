@@ -1,0 +1,8 @@
+@yini strict
+
+^ Numbers
+negativeInteger = -42
+negativeFloat = -3.5
+negativeExponent = -1e-3
+
+/END

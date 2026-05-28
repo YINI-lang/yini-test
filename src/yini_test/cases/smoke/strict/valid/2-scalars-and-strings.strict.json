@@ -1,0 +1,31 @@
+﻿{
+  "Project": {
+    "name": "pear-reader",
+    "version": "1.0.0",
+    "description": "Reader service for processing Pear configuration documents",
+    "environment": "staging",
+
+    "enabled": true,
+    "publish": false,
+    "private": false,
+
+    "schemaVersion": "2026.1",
+    "releaseChannel": "stable",
+
+    "priority": 5,
+    "timeoutSec": 30,
+    "ratio": 1.25,
+    "offsetMinutes": -60,
+    "sampleRate": 0.001,
+    "deprecatedAt": null,
+
+    "homepage": "https://homepage.example",
+    "readme": "README.md",
+    "license": "Apache-2.0",
+
+    "entrypoint": "pear-reader",
+    "defaultEncoding": "utf-8",
+    "featureMask": 10,
+    "themeColor": 3386060
+  }
+}

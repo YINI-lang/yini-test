@@ -1,0 +1,6 @@
+@yini strict
+
+^ Lists
+items = []
+
+/END

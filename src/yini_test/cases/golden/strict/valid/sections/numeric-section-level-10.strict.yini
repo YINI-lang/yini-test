@@ -1,0 +1,34 @@
+@yini strict
+
+^ Level01
+name = "level-01"
+
+^2 Level02
+name = "level-02"
+
+^3 Level03
+name = "level-03"
+
+^4 Level04
+name = "level-04"
+
+^5 Level05
+name = "level-05"
+
+^6 Level06
+name = "level-06"
+
+^7 Level07
+name = "level-07"
+
+^8 Level08
+name = "level-08"
+
+^9 Level09
+name = "level-09"
+
+^10 Level10
+name = "level-10"
+depth = 10
+
+/END

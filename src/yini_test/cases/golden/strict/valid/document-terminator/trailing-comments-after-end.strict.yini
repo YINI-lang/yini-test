@@ -1,0 +1,10 @@
+@yini strict
+
+^ Document
+name = "strict-trailing-comments-after-end"
+status = "complete"
+
+/END
+
+// A full-line comment is allowed after the document terminator.
+# Another trailing comment is allowed after the terminator.

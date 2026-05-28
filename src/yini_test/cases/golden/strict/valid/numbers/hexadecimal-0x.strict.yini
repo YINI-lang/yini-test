@@ -1,0 +1,8 @@
+@yini strict
+
+^ Numbers
+red = 0xFF0000
+green = 0x00FF00
+withSeparators = 0x_FF_AA_00
+
+/END

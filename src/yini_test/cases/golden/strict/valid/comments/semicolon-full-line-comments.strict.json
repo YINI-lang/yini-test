@@ -1,0 +1,6 @@
+{
+  "Application": {
+    "name": "strict-semicolon-comments",
+    "enabled": true
+  }
+}

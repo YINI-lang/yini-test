@@ -1,0 +1,8 @@
+{
+  "Application": {
+    "version": "1.0.0",
+    "status": "ready",
+    "name": "lenient-root-after-section",
+    "enabled": true
+  }
+}

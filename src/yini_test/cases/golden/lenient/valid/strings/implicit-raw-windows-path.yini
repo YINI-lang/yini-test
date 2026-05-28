@@ -1,0 +1,5 @@
+@yini
+
+^ Strings
+path = "C:\Users\demo\Documents\report.txt"
+share = "\\server\share\folder"

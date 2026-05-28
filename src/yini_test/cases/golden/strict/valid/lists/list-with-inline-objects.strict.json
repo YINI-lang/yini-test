@@ -1,0 +1,14 @@
+{
+  "Lists": {
+    "servers": [
+      {
+        "host": "api-1",
+        "port": 8080
+      },
+      {
+        "host": "api-2",
+        "port": 8081
+      }
+    ]
+  }
+}

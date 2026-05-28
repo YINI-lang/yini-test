@@ -1,0 +1,8 @@
+@yini relaxed
+
+^ App
+name = "yini-unknown-in-strict-mode"
+mode = "strict"
+enabled = true
+
+/END

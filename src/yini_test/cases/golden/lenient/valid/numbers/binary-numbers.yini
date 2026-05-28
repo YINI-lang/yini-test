@@ -1,0 +1,5 @@
+@yini
+
+^ Numbers
+mask = 0b1010
+withSeparators = 0b_1010_1100

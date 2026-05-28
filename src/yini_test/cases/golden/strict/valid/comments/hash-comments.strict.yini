@@ -1,0 +1,9 @@
+@yini strict
+
+# Full-line hash comment before a section.
+^ Application
+# Full-line hash comment before a member.
+name = "strict-hash-comments"
+enabled = true
+
+/END

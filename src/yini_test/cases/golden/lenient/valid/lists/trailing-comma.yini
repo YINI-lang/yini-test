@@ -1,0 +1,7 @@
+@yini
+
+^ Lists
+items = [
+    "alpha",
+    "beta",
+]

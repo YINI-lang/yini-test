@@ -1,0 +1,13 @@
+﻿{
+  "App": {
+    "name": "DemoApp",
+    "name2": "demoapp",
+    "version": 1.0,
+    "isDebug": false,
+    "Server": {
+      "host": "127.0.0.1",
+      "port": 8080,
+      "useTLS": false
+    }
+  }
+}

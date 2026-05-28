@@ -1,0 +1,9 @@
+@yini strict
+
+^ Objects
+cache = {
+    enabled:
+        true
+}
+
+/END

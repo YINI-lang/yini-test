@@ -1,0 +1,8 @@
+{
+    "App": {
+        "message": "This # is not a comment, and this // is not a comment.",
+        "name": "Demo App",
+        "path": "/tmp/app",
+        "version": 1.0
+    }
+}

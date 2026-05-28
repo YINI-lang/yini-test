@@ -1,0 +1,6 @@
+@yini
+
+^ Application
+name = "first-name"
+name = "second-name"
+status = "kept"

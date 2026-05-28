@@ -1,0 +1,8 @@
+@yini strict
+
+^ Application
+name = "strict-section-single"
+enabled = true
+environment = "production"
+
+/END

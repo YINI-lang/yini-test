@@ -1,0 +1,6 @@
+@yini strict
+
+^ Values
+value = @unsupported
+
+/END

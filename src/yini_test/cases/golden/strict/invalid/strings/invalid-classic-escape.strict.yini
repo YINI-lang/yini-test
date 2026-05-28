@@ -1,0 +1,6 @@
+@yini strict
+
+^ Strings
+message = C"bad unicode escape \u12"
+
+/END

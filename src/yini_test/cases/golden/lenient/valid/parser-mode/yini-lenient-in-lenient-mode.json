@@ -1,0 +1,7 @@
+{
+  "App": {
+    "name": "yini-lenient-in-lenient-mode",
+    "mode": "lenient",
+    "enabled": true
+  }
+}

@@ -1,0 +1,6 @@
+@yini strict
+
+^ Concat
+object = { value: "a" } + { value: "b" }
+
+/END

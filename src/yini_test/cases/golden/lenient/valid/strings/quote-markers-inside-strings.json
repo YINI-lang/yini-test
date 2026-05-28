@@ -1,0 +1,7 @@
+{
+  "Strings": {
+    "doubleInsideSingle": "The word \"quoted\" stays inside.",
+    "singleInsideDouble": "The word 'quoted' stays inside.",
+    "backticks": "Use `name` as a label."
+  }
+}

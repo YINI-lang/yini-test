@@ -1,0 +1,5 @@
+@yini
+
+^ Concat
+enabledLabel = "enabled-" + true
+disabledLabel = "disabled-" + no

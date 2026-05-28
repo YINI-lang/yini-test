@@ -1,0 +1,7 @@
+@yini strict
+
+^ Syntax
+name = "before unexpected token"
+!
+
+/END
