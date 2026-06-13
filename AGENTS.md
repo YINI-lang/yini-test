@@ -37,7 +37,6 @@ This repository does **not** contain a YINI parser. It discovers YINI test cases
 ```
 
 Important modules:
-
 - `src/yini_test/cli.py`: command-line argument parsing.
 - `src/yini_test/runner.py`: suite and case execution.
 - `src/yini_test/discovery.py`: valid, warning, and invalid case discovery.
@@ -138,7 +137,6 @@ If a required check cannot be run, explain why and describe what was validated i
 Follow the existing Python style in `src/yini_test` and `tests`.
 
 General rules:
-
 - Prefer clear, simple, maintainable code.
 - Prefer small, focused changes.
 - Do not rewrite unrelated code.
@@ -156,14 +154,12 @@ General rules:
 ## Testing
 
 When changing runner behavior:
-
 - Add or update focused pytest coverage in `tests/`.
 - Prefer direct tests of discovery, runner, adapter, expectation, or diff helpers.
 - Keep tests deterministic and filesystem-local, usually with `tmp_path`.
 - Do not remove failing tests. Fix the issue or clearly report why the test is failing.
 
 When changing the case corpus:
-
 - Valid cases must include a `.yini` file and matching `.json` file with the same basename.
 - Warning cases must include `.yini`, `.json`, and `.warning.json` files with the same basename.
 - Invalid cases only require the `.yini` file; do not add expected-output sidecars unless the runner contract changes.
@@ -173,7 +169,6 @@ When changing the case corpus:
 ## Documentation Guidance
 
 Update documentation when a change affects:
-
 - command-line usage,
 - adapter behavior,
 - case layout or case contracts,
@@ -197,8 +192,23 @@ If a new dependency is necessary, explain why it is justified and update the app
 
 ## Safety and Scope Boundaries
 
-Do not modify:
+### Always Do
 
+- Run tests before submitting any change.
+- Match the code patterns in the file you are editing.
+- Keep changes focused — one concern per PR.
+- When editing Markdown files, if a line introduces a bulleted list and ends with a colon (`:`), place the first bullet immediately on the next line. Do not insert a blank line between the introductory line and the first bullet.
+
+### Ask First
+
+- Before adding a new dependency.
+- Before changing the public API or exported types.
+- Before modifying CI/CD configuration.
+- Before refactoring shared utilities used across multiple modules.
+
+### Never Do
+
+Do not modify:
 - secrets,
 - credentials,
 - private keys,
@@ -209,7 +219,6 @@ Do not modify:
 - unrelated formatting or whitespace.
 
 Do not perform destructive operations such as:
-
 - deleting large parts of the repository,
 - resetting history,
 - force-pushing,
@@ -223,7 +232,6 @@ Do not create commits, tags, branches, or releases unless explicitly requested.
 The YINI format values clarity, readability, predictability, explicit structure, and deterministic parsing.
 
 When changing code, tests, cases, examples, or documentation:
-
 - Prefer clarity over cleverness.
 - Avoid implicit or magical behavior.
 - Keep syntax examples human-readable.
