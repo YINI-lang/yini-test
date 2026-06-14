@@ -81,8 +81,7 @@ Run smoke or golden cases against configured parser adapters:
 ```bash
 task run-smoke-python-lenient
 task run-smoke-python-strict
-task run-all-python-lenient
-task run-all-python-strict
+task run-all-python
 task run-smoke-typescript-lenient
 task run-smoke-typescript-strict
 task run-all-typescript
@@ -125,8 +124,7 @@ For case-corpus changes, also run the relevant adapter cases if the required sib
 ```bash
 task run-smoke-python-lenient
 task run-smoke-python-strict
-task run-all-python-lenient
-task run-all-python-strict
+task run-all-python
 ```
 
 If a required check cannot be run, explain why and describe what was validated instead.
