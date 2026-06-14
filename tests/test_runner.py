@@ -11,12 +11,10 @@ from yini_test.diffing import make_diff
 from yini_test.discovery import (
     discover_invalid_cases,
     discover_valid_cases,
-    discover_warning_cases,
     get_expected_json_path,
-    get_expected_warning_path,
 )
-from yini_test.models import CaseResult, InvalidCase, ValidCase, WarningCase
-from yini_test.runner import run_case_group, run_suite, _resolve_suite_names
+from yini_test.models import CaseResult, InvalidCase, ValidCase
+from yini_test.runner import run_suite_matrix, _resolve_suite_names
 
 
 def test_get_expected_json_path_returns_matching_json_path(tmp_path: Path) -> None:
@@ -54,7 +52,7 @@ def test_get_expected_json_path_raises_clear_error_when_json_file_is_missing(
     assert f'yini_path: "{yini_path}"' in message
     assert f'expected_json_path: "{expected_json_path}"' in message
     assert "matching .json file" in message
-    
+
 
 def test_discover_valid_cases_returns_yini_json_pairs(tmp_path: Path) -> None:
     # Arrange.
@@ -238,6 +236,17 @@ def test_resolve_suite_names_for_smoke() -> None:
     assert result == ["smoke"]
 
 
+def test_resolve_suite_names_for_golden() -> None:
+    # Arrange.
+    suite = "golden"
+
+    # Act.
+    result = _resolve_suite_names(suite)
+
+    # Assert.
+    assert result == ["golden"]
+
+
 def test_resolve_suite_names_for_all() -> None:
     # Arrange.
     suite = "all"
@@ -259,3 +268,49 @@ def test_resolve_suite_names_raises_for_unknown_suite() -> None:
 
     # Assert.
     assert "Unsupported suite" in str(exc_info.value)
+
+
+def test_run_suite_matrix_runs_groups_in_suite_then_mode_order(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    # Arrange.
+    calls: list[tuple[str, str]] = []
+
+    def fake_run_case_group(
+        suite_name: str,
+        mode: str,
+        cases_root: Path,
+        adapter_tokens: list[str],
+        fail_fast: bool = False,
+    ) -> list[CaseResult]:
+        calls.append((suite_name, mode))
+        return [
+            CaseResult(
+                case_path=tmp_path / f"{suite_name}-{mode}.yini",
+                passed=True,
+            )
+        ]
+
+    monkeypatch.setattr("yini_test.runner.run_case_group", fake_run_case_group)
+
+    # Act.
+    exit_code = run_suite_matrix(
+        suite="all",
+        modes=["lenient", "strict"],
+        cases_root=tmp_path,
+        adapter_tokens=["adapter"],
+    )
+
+    # Assert.
+    output = capsys.readouterr().out
+
+    assert exit_code == 0
+    assert calls == [
+        ("smoke", "lenient"),
+        ("smoke", "strict"),
+        ("golden", "lenient"),
+        ("golden", "strict"),
+    ]
+    assert "Summary: 4 passed, 0 failed, 4 total" in output

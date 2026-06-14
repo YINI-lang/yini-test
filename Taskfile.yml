@@ -93,21 +93,10 @@ tasks:
     cmds:
       - python -m yini_test smoke --strict --cases-root {{.PATH_CASES}} --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
 
-  run-all-typescript-lenient:
-    desc: Run all lenient cases against yini-parser-typescript
-    cmds:
-      - python -m yini_test all --cases-root {{.PATH_CASES}} --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
-
-  run-all-typescript-strict:
-    desc: Run all strict cases against yini-parser-typescript
-    cmds:
-      - python -m yini_test all --strict --cases-root {{.PATH_CASES}} --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
-
   run-all-typescript:
-    desc: Run all lenient and strict cases against yini-parser-typescript
+    desc: Run smoke and golden cases in lenient and strict mode against yini-parser-typescript
     cmds:
-      - task run-all-typescript-lenient
-      - task run-all-typescript-strict
+      - python -m yini_test all --all-modes --cases-root {{.PATH_CASES}} --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
 
   # ---------------------------------------------------------------------------
   # Run yini-test cases against yini-parser-python.
@@ -127,25 +116,12 @@ tasks:
     cmds:
       - python -m yini_test smoke --strict --cases-root {{.PATH_CASES}} --adapter python ../yini-parser-python/tools/yini_parser_adapter.py --input {input} --mode {mode}
 
-  run-all-python-lenient:
-    desc: Run all lenient cases against yini-parser-python
-    env:
-      PYTHONPATH: src
-    cmds:
-      - python -m yini_test all --cases-root {{.PATH_CASES}} --adapter python ../yini-parser-python/tools/yini_parser_adapter.py --input {input} --mode {mode}
-
-  run-all-python-strict:
-    desc: Run all strict cases against yini-parser-python
-    env:
-      PYTHONPATH: src
-    cmds:
-      - python -m yini_test all --strict --cases-root {{.PATH_CASES}} --adapter python ../yini-parser-python/tools/yini_parser_adapter.py --input {input} --mode {mode}
-
   run-all-python:
-    desc: Run all lenient and strict cases against yini-parser-python
+    desc: Run smoke and golden cases in lenient and strict mode against yini-parser-python
+    env:
+      PYTHONPATH: src
     cmds:
-      - task run-all-python-lenient
-      - task run-all-python-strict
+      - python -m yini_test all --all-modes --cases-root {{.PATH_CASES}} --adapter python ../yini-parser-python/tools/yini_parser_adapter.py --input {input} --mode {mode}
 
   # ---------------------------------------------------------------------------
   # Convenience aliases.
@@ -154,7 +130,8 @@ tasks:
   smoke:
     desc: Run smoke cases against the default parser adapter
     cmds:
-      - task run-smoke-typescript
+      - task run-smoke-typescript-lenient
+      - task run-smoke-typescript-strict
 
   all:
     desc: Run all cases against the default parser adapter
@@ -164,8 +141,10 @@ tasks:
   adapters-smoke:
     desc: Run smoke cases against all configured parser adapters
     cmds:
-      - task run-smoke-typescript
-      - task run-smoke-python
+      - task run-smoke-typescript-lenient
+      - task run-smoke-typescript-strict
+      - task run-smoke-python-lenient
+      - task run-smoke-python-strict
 
   adapters-all:
     desc: Run all available cases against all configured parser adapters

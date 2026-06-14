@@ -14,9 +14,12 @@ Supported forms:
 
     yini-test --adapter ...
     yini-test smoke --adapter ...
+    yini-test golden --adapter ...
     yini-test all --adapter ...
     yini-test smoke --strict --adapter ...
+    yini-test golden --strict --adapter ...
     yini-test all --strict --adapter ...
+    yini-test all --all-modes --adapter ...
 
 Notes:
 - The default suite is "all".
@@ -31,7 +34,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from .runner import run_suite
+from .runner import run_suite, run_suite_matrix
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -56,7 +59,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "suite",
         nargs="?",
-        choices=("all", "smoke"),
+        choices=("all", "smoke", "golden"),
         default="all",
         help="Test suite to run. Default: all",
     )
@@ -69,6 +72,16 @@ def build_parser() -> argparse.ArgumentParser:
         "--strict",
         action="store_true",
         help="Run cases in strict mode. Default: lenient mode",
+    )
+
+    # Run both lenient and strict modes for the selected suite.
+    #
+    # For "all", this runs smoke/lenient, smoke/strict, golden/lenient,
+    # and golden/strict with one combined summary.
+    parser.add_argument(
+        "--all-modes",
+        action="store_true",
+        help="Run both lenient and strict modes with one combined summary.",
     )
 
     # Root directory containing the test case structure.
@@ -153,6 +166,18 @@ def main(argv: list[str] | None = None) -> int:
     # actual adapter command after it.
     if not args.adapter:
         parser.error("--adapter requires a command")
+
+    if args.all_modes and args.strict:
+        parser.error("--all-modes cannot be combined with --strict")
+
+    if args.all_modes:
+        return run_suite_matrix(
+            suite=args.suite,
+            modes=["lenient", "strict"],
+            cases_root=args.cases_root,
+            adapter_tokens=args.adapter,
+            fail_fast=args.fail_fast,
+        )
 
     # Convert the boolean CLI flag into the explicit mode string expected
     # by the runner layer.

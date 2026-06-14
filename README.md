@@ -36,12 +36,14 @@ Run:
 task clean
 task install
 task test
-task run-smoke-python
+task run-smoke-python-lenient
+task run-smoke-python-strict
 ```
 
 If you want to test the TypeScript parser instead, replace the last command with:
 ```bash
-task run-smoke-typescript
+task run-smoke-typescript-lenient
+task run-smoke-typescript-strict
 ```
 
 ### Later runs
@@ -50,13 +52,15 @@ Run these commands from the `yini-test/` directory.
 
 Run:
 ```bash
-task run-smoke-python
+task run-smoke-python-lenient
+task run-smoke-python-strict
 ```
 
 or:
 
 ```bash
-task run-smoke-typescript
+task run-smoke-typescript-lenient
+task run-smoke-typescript-strict
 ```
 
 depending on which parser implementation you want to test.
@@ -120,7 +124,8 @@ A successful result should look similar to:
 ### 5. Run smoke tests against `yini-parser-python`
 
 ```bash
-task run-smoke-python
+task run-smoke-python-lenient
+task run-smoke-python-strict
 ```
 
 This runs the smoke test cases against the Python parser adapter.
@@ -134,7 +139,37 @@ python -m yini_test smoke \
 
 The `{input}` and `{mode}` placeholders are replaced automatically for each test case.
 
-### 6. Understanding the result
+### 6. Run all Python cases
+
+```bash
+task run-all-python
+```
+
+This runs the Python adapter against smoke lenient, smoke strict, golden lenient, and golden strict cases, then prints one combined summary.
+
+The task uses:
+```bash
+python -m yini_test all --all-modes \
+  --cases-root src/yini_test/cases \
+  --adapter python ../yini-parser-python/tools/yini_parser_adapter.py --input {input} --mode {mode}
+```
+
+### 7. Run all TypeScript cases
+
+```bash
+task run-all-typescript
+```
+
+This runs the TypeScript adapter against smoke lenient, smoke strict, golden lenient, and golden strict cases, then prints one combined summary.
+
+The task uses:
+```bash
+python -m yini_test all --all-modes \
+  --cases-root src/yini_test/cases \
+  --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
+```
+
+### 8. Understanding the result
 
 Each case is reported as `PASS` or `FAIL`.
 

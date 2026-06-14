@@ -27,3 +27,36 @@ def test_build_parser() -> None:
         "--mode",
         "{mode}",
     ]
+
+
+def test_build_parser_accepts_golden_suite() -> None:
+    parser = build_parser()
+    args = parser.parse_args(
+        [
+            "golden",
+            "--adapter",
+            "python",
+            "adapter.py",
+        ]
+    )
+
+    assert args.suite == "golden"
+    assert args.strict is False
+    assert args.all_modes is False
+
+
+def test_build_parser_accepts_all_modes() -> None:
+    parser = build_parser()
+    args = parser.parse_args(
+        [
+            "all",
+            "--all-modes",
+            "--adapter",
+            "python",
+            "adapter.py",
+        ]
+    )
+
+    assert args.suite == "all"
+    assert args.all_modes is True
+    assert args.strict is False

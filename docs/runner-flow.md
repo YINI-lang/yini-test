@@ -10,3 +10,5 @@ yini-test runner
   -> adapter prints JSON or error
   -> yini-test checks success/failure/output
 ```
+
+When `--all-modes` is used, the runner executes the selected suite in lenient and strict mode and prints one combined summary. For `all --all-modes`, the order is smoke lenient, smoke strict, golden lenient, then golden strict.
