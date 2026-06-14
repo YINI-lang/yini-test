@@ -1,0 +1,40 @@
+# .github/workflows/run-tests-fast.yml
+#
+# Fast CI
+name: Run tests-fast
+
+on:
+  # Runs on every PR to main.
+  pull_request:
+    branches: ['main']  # PRs targeting main.
+
+  # Runs on pushes to main.
+  push:
+    branches: ['main']  # Direct commits and merges into main.
+
+  workflow_dispatch:    # Allows manual run from GitHub UI.
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go Task
+        uses: arduino/setup-task@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+          python -m pip install -e .
+
+      - name: Run tests
+        run: task test
