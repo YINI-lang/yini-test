@@ -85,8 +85,7 @@ task run-all-python-lenient
 task run-all-python-strict
 task run-smoke-typescript-lenient
 task run-smoke-typescript-strict
-task run-all-typescript-lenient
-task run-all-typescript-strict
+task run-all-typescript
 ```
 
 These adapter commands assume sibling repositories named `../yini-parser-python` and `../yini-parser-typescript`, as documented in `README.md`.

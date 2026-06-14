@@ -37,6 +37,7 @@ from yini_test.models import CaseResult, InvalidCase, ValidCase, WarningCase
 from yini_test.utils.executables import resolve_executable
 from yini_test.utils.formatting import format_duration
 
+
 def run_suite(
     suite: str,
     mode: str,
@@ -59,8 +60,60 @@ def run_suite(
     - 1 if any case failed
     """
 
-    started_at = time.perf_counter()
     suite_names = _resolve_suite_names(suite)
+    case_groups = [(suite_name, mode) for suite_name in suite_names]
+
+    return run_case_groups(
+        case_groups=case_groups,
+        cases_root=cases_root,
+        adapter_tokens=adapter_tokens,
+        fail_fast=fail_fast,
+        show_group_headers=False,
+    )
+
+
+def run_suite_matrix(
+    suite: str,
+    modes: list[str],
+    cases_root: Path,
+    adapter_tokens: list[str],
+    fail_fast: bool = False,
+) -> int:
+    """
+    Run selected suites across multiple parser modes.
+
+    The order is suite-major, then mode-major. For "all" and
+    ["lenient", "strict"], this runs:
+    - smoke / lenient
+    - smoke / strict
+    - golden / lenient
+    - golden / strict
+    """
+
+    suite_names = _resolve_suite_names(suite)
+    case_groups = [(suite_name, mode) for suite_name in suite_names for mode in modes]
+
+    return run_case_groups(
+        case_groups=case_groups,
+        cases_root=cases_root,
+        adapter_tokens=adapter_tokens,
+        fail_fast=fail_fast,
+        show_group_headers=True,
+    )
+
+
+def run_case_groups(
+    case_groups: list[tuple[str, str]],
+    cases_root: Path,
+    adapter_tokens: list[str],
+    fail_fast: bool = False,
+    show_group_headers: bool = False,
+) -> int:
+    """
+    Run concrete suite/mode groups and print one combined summary.
+    """
+
+    started_at = time.perf_counter()
     total_passed = 0
     total_failed = 0
 
@@ -75,7 +128,11 @@ def run_suite(
         File paths cyan or dim
     """
 
-    for suite_name in suite_names:
+    for suite_name, mode in case_groups:
+        if show_group_headers:
+            print()
+            print(f"Group: {suite_name} / {mode}")
+
         results = run_case_group(
             suite_name=suite_name,
             mode=mode,
@@ -86,7 +143,7 @@ def run_suite(
 
         for result in results:
             label = "PASS" if result.passed else "FAIL"
-            print(f"{label}  \"{result.case_path}\"")
+            print(f'{label}  "{result.case_path}"')
 
             if not result.passed and result.message:
                 print()
@@ -149,22 +206,26 @@ def run_case_group(
 
     results: list[CaseResult] = []
 
-    for case in valid_cases:
-        result = run_valid_case(case, adapter_tokens=adapter_tokens, mode=mode)
+    for valid_case in valid_cases:
+        result = run_valid_case(valid_case, adapter_tokens=adapter_tokens, mode=mode)
         results.append(result)
 
         if fail_fast and not result.passed:
             return results
 
-    for case in warning_cases:
-        result = run_warning_case(case, adapter_tokens=adapter_tokens, mode=mode)
+    for warning_case in warning_cases:
+        result = run_warning_case(
+            warning_case, adapter_tokens=adapter_tokens, mode=mode
+        )
         results.append(result)
 
         if fail_fast and not result.passed:
             return results
 
-    for case in invalid_cases:
-        result = run_invalid_case(case, adapter_tokens=adapter_tokens, mode=mode)
+    for invalid_case in invalid_cases:
+        result = run_invalid_case(
+            invalid_case, adapter_tokens=adapter_tokens, mode=mode
+        )
         results.append(result)
 
         if fail_fast and not result.passed:
@@ -189,7 +250,7 @@ def run_valid_case(
 
     expected = load_expected_json(case.json_path)
 
-    print(f"RUN   \"{case.yini_path}\"")
+    print(f'RUN   "{case.yini_path}"')
     try:
         actual = run_adapter(adapter_tokens, input_path=case.yini_path, mode=mode)
     except RuntimeError as exc:
@@ -207,10 +268,7 @@ def run_valid_case(
     return CaseResult(
         case_path=case.yini_path,
         passed=False,
-        message=(
-            f"Output mismatch for valid case: {case.yini_path.name}\n"
-            f"{diff}"
-        ),
+        message=(f"Output mismatch for valid case: {case.yini_path.name}\n{diff}"),
     )
 
 
@@ -232,7 +290,7 @@ def run_warning_case(
     expected_json = load_expected_json(case.json_path)
     expected_warnings = load_expected_warnings(case.warning_path)
 
-    print(f"RUN   \"{case.yini_path}\"")
+    print(f'RUN   "{case.yini_path}"')
     try:
         adapter_result = run_adapter_raw(
             adapter_tokens=adapter_tokens,
@@ -274,8 +332,7 @@ def run_warning_case(
             case_path=case.yini_path,
             passed=False,
             message=(
-                f"Output mismatch for warning case: {case.yini_path.name}\n"
-                f"{diff}"
+                f"Output mismatch for warning case: {case.yini_path.name}\n{diff}"
             ),
         )
 
@@ -318,7 +375,7 @@ def run_invalid_case(
 
     command[0] = resolve_executable(command[0])
 
-    print(f"RUN   \"{case.yini_path}\"")
+    print(f'RUN   "{case.yini_path}"')
     try:
         adapter_result = run_adapter_raw(
             adapter_tokens=adapter_tokens,
@@ -347,7 +404,7 @@ def run_invalid_case(
         details.append(f"stderr:\n{stderr}")
 
     message = (
-        f"Invalid case was expected to fail, but succeeded: \"{case.yini_path.name}\"\n"
+        f'Invalid case was expected to fail, but succeeded: "{case.yini_path.name}"\n'
         f"Command: {' '.join(command)}"
     )
 
@@ -367,11 +424,15 @@ def _resolve_suite_names(suite: str) -> list[str]:
 
     Current mapping:
     - smoke -> ["smoke"]
+    - golden -> ["golden"]
     - all -> ["smoke", "golden"]
     """
 
     if suite == "smoke":
         return ["smoke"]
+
+    if suite == "golden":
+        return ["golden"]
 
     if suite == "all":
         return ["smoke", "golden"]

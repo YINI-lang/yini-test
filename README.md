@@ -41,7 +41,8 @@ task run-smoke-python
 
 If you want to test the TypeScript parser instead, replace the last command with:
 ```bash
-task run-smoke-typescript
+task run-smoke-typescript-lenient
+task run-smoke-typescript-strict
 ```
 
 ### Later runs
@@ -56,7 +57,8 @@ task run-smoke-python
 or:
 
 ```bash
-task run-smoke-typescript
+task run-smoke-typescript-lenient
+task run-smoke-typescript-strict
 ```
 
 depending on which parser implementation you want to test.
@@ -134,7 +136,22 @@ python -m yini_test smoke \
 
 The `{input}` and `{mode}` placeholders are replaced automatically for each test case.
 
-### 6. Understanding the result
+### 6. Run all TypeScript cases
+
+```bash
+task run-all-typescript
+```
+
+This runs the TypeScript adapter against smoke lenient, smoke strict, golden lenient, and golden strict cases, then prints one combined summary.
+
+The task uses:
+```bash
+python -m yini_test all --all-modes \
+  --cases-root src/yini_test/cases \
+  --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
+```
+
+### 7. Understanding the result
 
 Each case is reported as `PASS` or `FAIL`.
 

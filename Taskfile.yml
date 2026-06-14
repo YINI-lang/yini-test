@@ -93,21 +93,10 @@ tasks:
     cmds:
       - python -m yini_test smoke --strict --cases-root {{.PATH_CASES}} --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
 
-  run-all-typescript-lenient:
-    desc: Run all lenient cases against yini-parser-typescript
-    cmds:
-      - python -m yini_test all --cases-root {{.PATH_CASES}} --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
-
-  run-all-typescript-strict:
-    desc: Run all strict cases against yini-parser-typescript
-    cmds:
-      - python -m yini_test all --strict --cases-root {{.PATH_CASES}} --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
-
   run-all-typescript:
-    desc: Run all lenient and strict cases against yini-parser-typescript
+    desc: Run smoke and golden cases in lenient and strict mode against yini-parser-typescript
     cmds:
-      - task run-all-typescript-lenient
-      - task run-all-typescript-strict
+      - python -m yini_test all --all-modes --cases-root {{.PATH_CASES}} --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
 
   # ---------------------------------------------------------------------------
   # Run yini-test cases against yini-parser-python.
