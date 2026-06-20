@@ -4,6 +4,8 @@
 > Read this before making any changes to the codebase.
 > If any instruction in this file is unclear, ambiguous, or conflicts with the repository state, stop and ask the human maintainer before proceeding.
 
+See also: [Shared AI agent instructions for the YINI project family](../AGENTS.md)
+
 ## Project Overview
 
 - **Name:** `yini-test`
@@ -44,6 +46,7 @@ Important modules:
 - `src/yini_test/expectations.py`: expected JSON and warning loading/matching.
 - `src/yini_test/diffing.py`: mismatch formatting.
 - `src/yini_test/models.py`: case and result dataclasses.
+- `src/yini_test/utils/`: small shared helper utilities.
 
 ## Commands
 
