@@ -15,8 +15,8 @@ A test case in `yini-test` is a small input/output contract.
 Each case tells `yini-test`:
 - What YINI input to run.
 - In which parser mode it should be run.
-- Whether parsing is expected to succeed or fail.
-- What output is expected on success.
+- Whether parsing is expected to succeed, warn, or fail.
+- What output is expected on success or warning.
 
 ---
 
@@ -30,16 +30,20 @@ cases/
   golden/
     lenient/
       valid/
+      warning/
       invalid/
     strict/
       valid/
+      warning/
       invalid/
   smoke/
     lenient/
       valid/
+      warning/
       invalid/
     strict/
       valid/
+      warning/
       invalid/
   edge/
 ```
@@ -70,11 +74,12 @@ The runner MUST NOT guess the mode from file contents.
 
 ---
 
-## Valid and invalid cases
+## Case result categories
 
-The directory path also defines whether parsing is expected to succeed or fail:
+The directory path also defines whether parsing is expected to succeed, warn, or fail:
 
 - `valid/` means parsing is expected to succeed.
+- `warning/` means parsing is expected to succeed and emit expected warning diagnostics.
 - `invalid/` means parsing is expected to fail.
 
 ---
@@ -100,11 +105,50 @@ cases/smoke/strict/valid/basic-config.strict.json
 Both files must have the same base name.
 
 For a successful valid case:
-
 - The adapter must succeed.
 - The adapter must return exit code `0`.
 - The adapter must print valid JSON to `stdout`.
 - The actual JSON output must match the expected `.json` file.
+
+---
+
+## Warning case format
+
+A warning case must contain:
+- One `.yini` input file.
+- One matching `.json` expected-output file.
+- One matching `.warning.json` expected-warning file.
+
+Example:
+
+```text
+cases/golden/lenient/warning/duplicate-key-first-wins.yini
+cases/golden/lenient/warning/duplicate-key-first-wins.json
+cases/golden/lenient/warning/duplicate-key-first-wins.warning.json
+```
+
+All files must have the same base name, except that the warning file uses the `.warning.json` suffix.
+
+For a successful warning case:
+- The adapter must succeed.
+- The adapter must return exit code `0`.
+- The adapter must print valid JSON to `stdout`.
+- The actual JSON output must match the expected `.json` file.
+- The adapter must emit the expected warning diagnostics to `stderr`.
+
+An expected-warning file must contain a JSON array. Each entry must be an object with a string `contains` field.
+
+Example:
+
+```json
+[
+    {
+        "contains": "duplicate key"
+    }
+]
+```
+
+Each `contains` value must appear somewhere in the adapter's `stderr`.
 
 ---
 
