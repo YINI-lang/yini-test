@@ -9,6 +9,8 @@ expected-output loading, and diff formatting live in dedicated helper modules.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from importlib import resources
+import json
 from pathlib import Path
 import sys
 import time
@@ -18,6 +20,7 @@ import time
 #   2. blank line
 #   3. local package imports, grouped by module
 
+from yini_test import __version__
 from yini_test.adapters import (
     parse_adapter_stdout_json,
     render_adapter_command,
@@ -83,6 +86,7 @@ def run_suite(
     case_groups = [(suite_name, mode) for suite_name in suite_names]
 
     return run_case_groups(
+        selected_suite=suite,
         case_groups=case_groups,
         cases_root=cases_root,
         adapter_tokens=adapter_tokens,
@@ -113,6 +117,7 @@ def run_suite_matrix(
     case_groups = [(suite_name, mode) for suite_name in suite_names for mode in modes]
 
     return run_case_groups(
+        selected_suite=suite,
         case_groups=case_groups,
         cases_root=cases_root,
         adapter_tokens=adapter_tokens,
@@ -122,6 +127,7 @@ def run_suite_matrix(
 
 
 def run_case_groups(
+    selected_suite: str,
     case_groups: list[tuple[str, str]],
     cases_root: Path,
     adapter_tokens: list[str],
@@ -195,6 +201,7 @@ def run_case_groups(
 
     print_summary(
         adapter_name=format_adapter_name(adapter_tokens),
+        selected_suite=selected_suite,
         group_summaries=group_summaries,
         total_passed=total_passed,
         total_failed=total_failed,
@@ -207,6 +214,7 @@ def run_case_groups(
 
 def print_summary(
     adapter_name: str,
+    selected_suite: str,
     group_summaries: list[GroupSummary],
     total_passed: int,
     total_failed: int,
@@ -221,8 +229,11 @@ def print_summary(
     summary_rule = format_summary_rule()
 
     print(summary_rule)
-    print("YINI Test Summary")
+    print("YINI Test Suite Summary")
     print(f"Adapter: {adapter_name}")
+    print(f"yini-test-suite: {__version__}")
+    print(f"Test suite: {selected_suite}")
+    print(f"YINI spec: {get_yini_spec_revision()}")
     print()
     print(
         f"{'Suite':<9}{'Mode':<9}{'Passed':>6}{'Failed':>8}{'Total':>7}{'Duration':>10}"
@@ -273,6 +284,35 @@ def format_summary_rule(stream_encoding: str | None = None) -> str:
         return SUMMARY_RULE_FALLBACK
 
     return SUMMARY_RULE
+
+
+def get_yini_spec_revision() -> str:
+    """
+    Return the YINI spec revision declared by the packaged case corpus.
+    """
+
+    manifest = load_case_manifest()
+    revision = manifest.get("yini_spec_revision")
+
+    if isinstance(revision, str) and revision.strip():
+        return revision
+
+    return "not declared"
+
+
+def load_case_manifest() -> dict[str, object]:
+    """
+    Load metadata for the packaged case corpus.
+    """
+
+    manifest_path = resources.files("yini_test").joinpath("cases", "manifest.json")
+    manifest_text = manifest_path.read_text(encoding="utf-8")
+    manifest = json.loads(manifest_text)
+
+    if not isinstance(manifest, dict):
+        raise ValueError("Case manifest must contain a JSON object.")
+
+    return manifest
 
 
 def format_adapter_name(adapter_tokens: list[str]) -> str:

@@ -50,6 +50,24 @@ cases/
 
 ---
 
+## Case Corpus Manifest
+
+The packaged case corpus SHOULD include `cases/manifest.json`.
+
+The manifest declares metadata that applies to the full packaged case corpus, including the YINI specification revision targeted by the cases.
+
+Example:
+```json
+{
+    "yini_spec_revision": "2026-06-draft",
+    "description": "YINI spec revision targeted by this packaged test corpus."
+}
+```
+
+The runner prints the manifest's `yini_spec_revision` value in its terminal summary.
+
+---
+
 ## Case categories
 
 ### Smoke

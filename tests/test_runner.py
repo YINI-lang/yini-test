@@ -17,6 +17,7 @@ from yini_test.models import CaseResult, InvalidCase, ValidCase
 from yini_test.runner import (
     format_adapter_name,
     format_summary_rule,
+    get_yini_spec_revision,
     run_suite_matrix,
     _resolve_suite_names,
 )
@@ -318,8 +319,11 @@ def test_run_suite_matrix_runs_groups_in_suite_then_mode_order(
         ("golden", "lenient"),
         ("golden", "strict"),
     ]
-    assert "YINI Test Summary" in output
+    assert "YINI Test Suite Summary" in output
     assert "Adapter: adapter" in output
+    assert "yini-test-suite: 0.2.0" in output
+    assert "Test suite: all" in output
+    assert "YINI spec: 2026-06-draft" in output
     assert "smoke    lenient" in output
     assert "golden   strict" in output
     assert "Result: PASS" in output
@@ -377,6 +381,9 @@ def test_run_suite_matrix_summary_lists_failed_groups(
 
     assert exit_code == 1
     assert "Adapter: yini-parser-typescript" in output
+    assert "yini-test-suite: 0.2.0" in output
+    assert "Test suite: all" in output
+    assert "YINI spec: 2026-06-draft" in output
     assert "Summary: 3 passed, 1 failed, 4 total" in output
     assert "Result: FAIL" in output
     assert "Failed groups:" in output
@@ -421,3 +428,11 @@ def test_format_summary_rule_falls_back_for_limited_terminal_encoding() -> None:
 
     # Assert.
     assert summary_rule == "-" * 40
+
+
+def test_get_yini_spec_revision_reads_packaged_case_manifest() -> None:
+    # Act.
+    revision = get_yini_spec_revision()
+
+    # Assert.
+    assert revision == "2026-06-draft"
