@@ -17,6 +17,7 @@ def test_build_parser() -> None:
         ]
     )
 
+    assert parser.prog == "yini-test-suite"
     assert args.suite == "smoke"
     assert args.strict is False
     assert args.adapter == [

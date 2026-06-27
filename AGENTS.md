@@ -8,7 +8,7 @@ See also: [Shared AI agent instructions for the YINI project family](../AGENTS.m
 
 ## Project Overview
 
-- **Name:** `yini-test`
+- **Name:** `yini-test-suite`
 - **Purpose:** Shared test harness and case corpus for YINI parser implementations.
 - **Language/runtime:** Python 3.10+
 - **Packaging:** `setuptools` via `pyproject.toml`
@@ -28,7 +28,7 @@ This repository does **not** contain a YINI parser. It discovers YINI test cases
 |-- src/yini_test/cases/        # Packaged smoke and golden YINI case corpus.
 |   |-- smoke/                  # Small practical confidence tests.
 |   `-- golden/                 # Broader fixed-output conformance cases.
-|-- tests/                      # Tests for the yini-test runner itself.
+|-- tests/                      # Tests for the yini-test-suite runner itself.
 |-- docs/                       # Contracts and runner documentation.
 |-- runner-configs/             # Runner configuration files, if present.
 |-- Taskfile.yml                # Common development and adapter-run commands.
@@ -56,7 +56,7 @@ Install development dependencies and editable package:
 task install
 ```
 
-Run the unit/integration tests for `yini-test` itself:
+Run the unit/integration tests for `yini-test-suite` itself:
 
 ```bash
 task test

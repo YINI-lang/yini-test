@@ -1,8 +1,8 @@
 # Adapter Contract
 
-An adapter is a small command-line program used by `yini-test` to run a specific YINI parser implementation.
+An adapter is a small command-line program used by `yini-test-suite` to run a specific YINI parser implementation.
 
-Its purpose is to let `yini-test` test different parser implementations in a uniform way.
+Its purpose is to let `yini-test-suite` test different parser implementations in a uniform way.
 
 ---
 
@@ -11,7 +11,7 @@ Its purpose is to let `yini-test` test different parser implementations in a uni
 This repository itself does not include the adapters for all the specific parser implementations.
 
 Instead, each parser project/repository should keep and maintain its own adapter, including:
-- Its own adapter script (for `yini-test`).
+- Its own adapter script (for `yini-test-suite`).
 - Any parser-specific setup.
 - Any parser-specific path or import handling.
 

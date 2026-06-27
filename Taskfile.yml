@@ -1,4 +1,4 @@
-# Taskfile.yml for yini-test.
+# Taskfile.yml for yini-test-suite.
 
 # Setup on Windows:
 # winget install Task.Task
@@ -16,12 +16,12 @@ tasks:
       - task --list
 
   help:
-    desc: Show yini-test CLI help
+    desc: Show yini-test-suite CLI help
     cmds:
       - python -m yini_test --help
 
   install:
-    desc: Install development dependencies and install yini-test in editable mode
+    desc: Install development dependencies and install yini-test-suite in editable mode
     cmds:
       - python -m pip install -r requirements-dev.txt
       - python -m pip install -e .
@@ -32,11 +32,11 @@ tasks:
       - python -m pip install -r requirements-dev.txt
 
   # ---------------------------------------------------------------------------
-  # Tests for yini-test itself.
+  # Tests for yini-test-suite itself.
   # ---------------------------------------------------------------------------
 
   test:
-    desc: Run unit/integration tests for yini-test itself with warnings treated as errors
+    desc: Run unit/integration tests for yini-test-suite itself with warnings treated as errors
     cmds:
       - python -m pytest -v -W error
 
@@ -46,7 +46,7 @@ tasks:
       - python -m pytest -v
 
   test-debug:
-    desc: Run unit/integration tests for yini-test itself with stdout/stderr enabled
+    desc: Run unit/integration tests for yini-test-suite itself with stdout/stderr enabled
     cmds:
       - python -m pytest -v -s
 
@@ -72,7 +72,7 @@ tasks:
       - python -m ruff format src tests
 
   check:
-    desc: Run all project checks for yini-test itself
+    desc: Run all project checks for yini-test-suite itself
     cmds:
       - task lint
       - task format-check
@@ -80,7 +80,7 @@ tasks:
       - task test
 
   # ---------------------------------------------------------------------------
-  # Run yini-test cases against yini-parser-typescript.
+  # Run yini-test-suite cases against yini-parser-typescript.
   # ---------------------------------------------------------------------------
 
   run-smoke-typescript-lenient:
@@ -99,7 +99,7 @@ tasks:
       - python -m yini_test all --all-modes --cases-root {{.PATH_CASES}} --adapter node ../yini-parser-typescript/dist-tools/tools/yini-test-adapter.js --input {input} --mode {mode}
 
   # ---------------------------------------------------------------------------
-  # Run yini-test cases against yini-parser-python.
+  # Run yini-test-suite cases against yini-parser-python.
   # ---------------------------------------------------------------------------
 
   run-smoke-python-lenient:

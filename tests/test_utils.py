@@ -16,9 +16,10 @@ To see the output even when tests pass, run:
   python -m pytest -v -s
 """
 
+
 def test_resolve_executable_returns_original_command_when_missing() -> None:
     # Arrange.
-    command = "definitely-not-a-real-yini-test-command"
+    command = "definitely-not-a-real-yini-test-suite-command"
 
     # Act.
     resolved = resolve_executable(command)
@@ -49,7 +50,7 @@ def test_resolve_executable_resolves_python() -> None:
 
     # Assert.
     assert resolved
-    assert resolved != "definitely-not-a-real-yini-test-command"
+    assert resolved != "definitely-not-a-real-yini-test-suite-command"
 
 
 def test_resolve_executable_resolves_npx_when_available() -> None:

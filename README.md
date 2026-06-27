@@ -1,14 +1,14 @@
-# yini-test
+# yini-test-suite
 
-The **yini-test** tool is the shared case corpus (test harness) for YINI parser implementations.
+The **yini-test-suite** tool is the shared case corpus (test harness) for YINI parser implementations.
 
 It does not contain a YINI parser itself. Instead, it invokes a chosen parser implementation through an adapter, compares the actual output with the expected output, and reports pass/fail results consistently.
 
-The goal of `yini-test` is to stay implementation-agnostic, so that multiple YINI parsers can be tested in a uniform way.
+The goal of `yini-test-suite` is to stay implementation-agnostic, so that multiple YINI parsers can be tested in a uniform way.
 
 ---
 
-## What `yini-test` does
+## What `yini-test-suite` does
 
 - Runs a chosen parser implementation through an adapter.
 - Compares actual output with expected output.
@@ -17,7 +17,7 @@ The goal of `yini-test` is to stay implementation-agnostic, so that multiple YIN
 
 ---
 
-## What `yini-test` does not do
+## What `yini-test-suite` does not do
 
 - It does not contain a YINI parser.
 - It does not contain parser-specific execution logic.
@@ -29,7 +29,7 @@ The goal of `yini-test` is to stay implementation-agnostic, so that multiple YIN
 
 ### First-time setup
 
-It is assumed you are in the `yini-test/` directory, and that you have the directory `yini-parser-python/` already alongside the directory `yini-test`.
+It is assumed you are in the `yini-test-suite/` directory, and that you have the directory `yini-parser-python/` already alongside the directory `yini-test-suite`.
 
 Run:
 ```bash
@@ -48,7 +48,7 @@ task run-smoke-typescript-strict
 
 ### Later runs
 
-Run these commands from the `yini-test/` directory.
+Run these commands from the `yini-test-suite/` directory.
 
 Run:
 ```bash
@@ -69,16 +69,16 @@ depending on which parser implementation you want to test.
 
 ## Expected local repository layout
 
-The predefined Taskfile commands assume that the parser repositories are located next to `yini-test`:
+The predefined Taskfile commands assume that the parser repositories are located next to `yini-test-suite`:
 
 ```text
 /
-├─ yini-test/
+├─ yini-test-suite/
 ├─ yini-parser-typescript/
 └─ yini-parser-python/
 ```
 
-Adapter paths are **relative to** this directory: `yini-test/`:
+Adapter paths are **relative to** this directory: `yini-test-suite/`:
 - The TypeScript parser adapter is expected at:  
   `../yini-parser-typescript/tools/yini-test-adapter.ts`
 - The Python parser adapter is expected at:  
@@ -100,7 +100,7 @@ This removes Python cache files and temporary tool caches.
 task install
 ```
 
-This installs the development dependencies and installs `yini-test` itself **in editable mode**.
+This installs the development dependencies and installs `yini-test-suite` itself **in editable mode**.
 
 ### 3. Show available tasks
 
@@ -108,13 +108,13 @@ This installs the development dependencies and installs `yini-test` itself **in 
 task
 ```
 
-### 4. Test `yini-test` itself
+### 4. Test `yini-test-suite` itself
 
 ```bash
 task test
 ```
 
-This runs the unit and integration tests for the `yini-test` runner.
+This runs the unit and integration tests for the `yini-test-suite` runner.
 
 A successful result should look similar to:
 ```txt
@@ -179,7 +179,7 @@ PASS  "cases\smoke\lenient\valid\1-minimal.yini"
 FAIL  "cases\smoke\lenient\valid\3-nested-sections.yini"
 ```
 
-For valid cases, `yini-test` compares the parser output with the matching expected JSON file.
+For valid cases, `yini-test-suite` compares the parser output with the matching expected JSON file.
 
 For example:
 ```txt
@@ -191,7 +191,7 @@ is compared with:
 cases/smoke/lenient/valid/3-nested-sections.json
 ```
 
-If a test case fails, `yini-test` prints the difference showing the expected output and the actual parser output.
+If a test case fails, `yini-test-suite` prints the difference showing the expected output and the actual parser output.
 
 ---
 
@@ -201,7 +201,7 @@ If a test case fails, `yini-test` prints the difference showing the expected out
 - `src/yini_test/cli.py` handles the command-line argument parsing.
 - `src/yini_test/runner.py` contains the core test-running logic.
 - `cases/` contains the shared (parser test) case corpus.
-- `tests/` contains tests for this `yini-test` project itself.
+- `tests/` contains tests for this `yini-test-suite` project itself.
 
 Current case groups include:
 - `golden/` for cases where valid input must produce exact expected output.
@@ -213,7 +213,7 @@ Current case groups include:
 
 This project itself does not include adapters for specific parser implementations.
 
-Instead, each parser project/repository should provide and maintain its own adapter logic for `yini-test` to call.
+Instead, each parser project/repository should provide and maintain its own adapter logic for `yini-test-suite` to call.
 
 ---
 

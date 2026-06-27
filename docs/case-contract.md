@@ -1,6 +1,6 @@
 # Case Contract
 
-This document defines how test cases are organized in `yini-test`.
+This document defines how test cases are organized in `yini-test-suite`.
 
 Its purpose is to make YINI test cases:
 - Easy to discover.
@@ -10,9 +10,9 @@ Its purpose is to make YINI test cases:
 
 ## Purpose
 
-A test case in `yini-test` is a small input/output contract.
+A test case in `yini-test-suite` is a small input/output contract.
 
-Each case tells `yini-test`:
+Each case tells `yini-test-suite`:
 - What YINI input to run.
 - In which parser mode it should be run.
 - Whether parsing is expected to succeed, warn, or fail.
@@ -167,7 +167,7 @@ For an invalid case:
 - The adapter must return a non-zero exit code.
 - The adapter should print a readable error message to `stderr`.
 
-At the first stage, `yini-test` does not require an expected error file for invalid cases. It is enough that the adapter fails correctly.
+At the first stage, `yini-test-suite` does not require an expected error file for invalid cases. It is enough that the adapter fails correctly.
 
 ---
 
@@ -183,7 +183,7 @@ YINI input files that are expected to be parsed in strict mode MAY end with `.st
 
 Expected `.json` files must contain valid, machine-readable JSON and represent the canonical expected parsed output for the case.
 
-For valid cases, `yini-test` compares the parsed JSON values, not raw text formatting. Differences in whitespace or indentation do not matter; the data structure itself must match.
+For valid cases, `yini-test-suite` compares the parsed JSON values, not raw text formatting. Differences in whitespace or indentation do not matter; the data structure itself must match.
 
 Expected `.json` SHOULD still be pretty-formatted (using 4-space indentation) so it's nicer for humans to read during debugging and development.
 

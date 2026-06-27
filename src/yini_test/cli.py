@@ -1,7 +1,7 @@
 """
 Command-line interface for yini_test.
 
-This module defines the user-facing CLI for the yini-test command.
+This module defines the user-facing CLI for the yini-test-suite command.
 
 The CLI is intentionally small. It only:
 
@@ -12,14 +12,14 @@ The CLI is intentionally small. It only:
 
 Supported forms:
 
-    yini-test --adapter ...
-    yini-test smoke --adapter ...
-    yini-test golden --adapter ...
-    yini-test all --adapter ...
-    yini-test smoke --strict --adapter ...
-    yini-test golden --strict --adapter ...
-    yini-test all --strict --adapter ...
-    yini-test all --all-modes --adapter ...
+    yini-test-suite --adapter ...
+    yini-test-suite smoke --adapter ...
+    yini-test-suite golden --adapter ...
+    yini-test-suite all --adapter ...
+    yini-test-suite smoke --strict --adapter ...
+    yini-test-suite golden --strict --adapter ...
+    yini-test-suite all --strict --adapter ...
+    yini-test-suite all --all-modes --adapter ...
 
 Notes:
 - The default suite is "all".
@@ -46,7 +46,7 @@ def build_parser() -> argparse.ArgumentParser:
     """
 
     parser = argparse.ArgumentParser(
-        prog="yini-test",
+        prog="yini-test-suite",
         description="Run YINI test suites against a parser adapter.",
     )
 
@@ -66,7 +66,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     # Select strict mode.
     #
-    # If this flag is not provided, yini-test runs in lenient mode.
+    # If this flag is not provided, yini-test-suite runs in lenient mode.
     # The runner receives the normalized string value: "strict" or "lenient".
     parser.add_argument(
         "--strict",
@@ -117,7 +117,7 @@ def build_parser() -> argparse.ArgumentParser:
     #
     # Important:
     # argparse.REMAINDER means this option captures everything after --adapter.
-    # Therefore, --adapter must be the final yini-test option.
+    # Therefore, --adapter must be the final yini-test-suite option.
     #
     # Example:
     #
