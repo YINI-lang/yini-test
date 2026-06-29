@@ -1,0 +1,6 @@
+{
+    "Config": {
+        "name": "section-marker-after-whitespace-line",
+        "enabled": true
+    }
+}

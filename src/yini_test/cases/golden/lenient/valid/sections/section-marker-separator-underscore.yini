@@ -1,0 +1,7 @@
+@yini
+
+^ Root
+name = "section-marker-separator-underscore"
+
+^_^ Child
+enabled = true

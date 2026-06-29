@@ -1,0 +1,7 @@
+@yini strict
+
+< Config
+name = "strict-alternate-marker-less-than"
+enabled = true
+
+/END

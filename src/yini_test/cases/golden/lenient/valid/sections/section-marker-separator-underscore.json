@@ -1,0 +1,8 @@
+{
+    "Root": {
+        "name": "section-marker-separator-underscore",
+        "Child": {
+            "enabled": true
+        }
+    }
+}

@@ -1,0 +1,7 @@
+@yini strict
+
+^ `Section With Spaces`
+name = "strict-backticked-name"
+enabled = true
+
+/END

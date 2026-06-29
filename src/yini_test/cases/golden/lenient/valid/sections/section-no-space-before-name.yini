@@ -1,0 +1,5 @@
+@yini
+
+^SectionName
+name = "section-no-space-before-name"
+enabled = true

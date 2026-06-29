@@ -1,0 +1,9 @@
+@yini strict
+
+^ Root
+name = "strict-marker-separator-underscore"
+
+^_^ Child
+enabled = true
+
+/END
