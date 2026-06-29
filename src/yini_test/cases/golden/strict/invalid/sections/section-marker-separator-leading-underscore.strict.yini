@@ -1,0 +1,6 @@
+@yini strict
+
+_^ Section
+value = true
+
+/END

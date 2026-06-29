@@ -1,0 +1,6 @@
+@yini strict
+
+^ Strings
+key = C"\o378"
+
+/END

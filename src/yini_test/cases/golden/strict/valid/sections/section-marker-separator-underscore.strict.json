@@ -1,0 +1,8 @@
+{
+    "Root": {
+        "name": "strict-marker-separator-underscore",
+        "Child": {
+            "enabled": true
+        }
+    }
+}

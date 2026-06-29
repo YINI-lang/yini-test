@@ -1,0 +1,7 @@
+@yini strict
+
+^ Strings
+key = "line one
+line two"
+
+/END

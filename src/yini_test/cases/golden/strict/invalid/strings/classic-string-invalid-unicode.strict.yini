@@ -1,0 +1,6 @@
+@yini strict
+
+^ Strings
+key = C"\u123"
+
+/END

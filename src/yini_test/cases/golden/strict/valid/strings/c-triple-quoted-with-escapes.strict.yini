@@ -1,0 +1,6 @@
+@yini strict
+
+^ Strings
+message = C"""tab:\there"""
+
+/END

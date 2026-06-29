@@ -1,0 +1,5 @@
+@yini
+
+< Config
+name = "lenient-alternate-marker-less-than"
+enabled = true

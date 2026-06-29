@@ -1,0 +1,19 @@
+@yini
+
+^ Level01
+depth = 1
+
+^2 Level02
+depth = 2
+
+^3 Level03
+depth = 3
+
+^4 Level04
+depth = 4
+
+^5 Level05
+depth = 5
+
+^^^_^^^ Section
+depth = 6

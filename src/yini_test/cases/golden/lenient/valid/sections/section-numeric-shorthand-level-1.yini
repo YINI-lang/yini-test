@@ -1,0 +1,5 @@
+@yini
+
+^1 Config
+name = "lenient-numeric-shorthand-level-1"
+enabled = true

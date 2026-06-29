@@ -1,0 +1,8 @@
+@yini strict
+
+^ Strings
+message = """Line one
+    Line two is indented
+    Line three is indented"""
+
+/END

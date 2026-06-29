@@ -1,0 +1,30 @@
+@yini strict
+
+^1 Level01
+depth = 1
+
+^2 Level02
+depth = 2
+
+^3 Level03
+depth = 3
+
+^4 Level04
+depth = 4
+
+^5 Level05
+depth = 5
+
+^6 Level06
+depth = 6
+
+^7 Level07
+depth = 7
+
+^8 Level08
+depth = 8
+
+^9 Level09
+depth = 9
+
+/END

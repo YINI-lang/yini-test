@@ -1,0 +1,6 @@
+{
+    "Section With Spaces": {
+        "name": "strict-backticked-name",
+        "enabled": true
+    }
+}

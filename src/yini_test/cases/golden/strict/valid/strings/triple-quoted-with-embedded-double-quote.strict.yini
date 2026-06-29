@@ -1,0 +1,6 @@
+@yini strict
+
+^ Strings
+message = """He said, "hello" and left."""
+
+/END
