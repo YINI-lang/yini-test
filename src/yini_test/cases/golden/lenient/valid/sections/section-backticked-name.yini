@@ -1,0 +1,5 @@
+@yini
+
+^ `Section With Spaces`
+name = "lenient-backticked-name"
+enabled = true
